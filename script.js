@@ -33,7 +33,10 @@ function loadNewWord() {
     document.getElementById("syllables-display").classList.add("hidden");
     document.getElementById("feedback-text").innerText = "اضغط على الميكروفون واقرأ الكلمة بصوت واضح";
     document.getElementById("feedback-text").className = "text-xl font-bold text-gray-600";
+    
+    // إظهار زر الميكروفون والتخطي وإخفاء زر التالي
     document.getElementById("mic-btn").classList.remove("hidden");
+    document.getElementById("skip-btn").classList.remove("hidden");
     document.getElementById("next-btn").classList.add("hidden");
 }
 
@@ -81,7 +84,9 @@ function handleCorrect() {
     document.getElementById("score").innerText = score;
     document.getElementById("feedback-text").innerText = "أحسنت! إجابة صحيحة ⭐";
     document.getElementById("feedback-text").className = "text-2xl font-black text-emerald-600 animate-bounce";
+    
     document.getElementById("mic-btn").classList.add("hidden");
+    document.getElementById("skip-btn").classList.add("hidden");
     document.getElementById("next-btn").classList.remove("hidden");
 
     if (wordsPool[currentIndex].weight > 1) {
@@ -94,19 +99,22 @@ function handleIncorrect() {
     document.getElementById("feedback-text").className = "text-xl font-bold text-rose-500";
     document.getElementById("syllables-display").classList.remove("hidden");
     
-    // زيادة وزن الكلمة لتتكرر لاحقاً (التعلم التكيفي)
     wordsPool[currentIndex].weight += 2;
-
-    // تشغيل نطق الكلمة ببطء للمساعدة الصوتية
     speakWordSlowly(currentTargetWord);
 }
 
-// دالة نطق الكلمة صوتياً عبر متصفح الأيباد
+// دالة تخطي الكلمة
+function skipWord() {
+    // زيادة وزن الكلمة لأنها سُميت صعبة وتم تخطيها، لكي تظهر لاحقاً
+    wordsPool[currentIndex].weight += 1;
+    loadNewWord();
+}
+
 function speakWordSlowly(text) {
     if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'ar-SA'; // اللغة العربية
-        utterance.rate = 0.6;    // سرعة بطيئة عشان الطفل يركز في مخارج الحروف
+        utterance.lang = 'ar-SA';
+        utterance.rate = 0.6;
         window.speechSynthesis.speak(utterance);
     }
 }
