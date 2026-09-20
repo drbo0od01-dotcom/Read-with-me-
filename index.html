@@ -37,10 +37,17 @@
 
         <!-- أزرار التفاعل -->
         <div class="flex flex-col gap-4">
+            <!-- زر الميكروفون -->
             <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-bold py-4 px-8 rounded-full shadow-lg transform transition active:scale-95 flex items-center justify-center gap-3 cursor-pointer">
                 <span>🎙️</span> ابدأ القراءة
             </button>
+
+            <!-- زر التخطي (يظهر أثناء المحاولة) -->
+            <button id="skip-btn" onclick="skipWord()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-lg font-bold py-2 px-6 rounded-full shadow-sm transition cursor-pointer">
+                ⏭️ تخطي هذه الكلمة
+            </button>
             
+            <!-- زر الكلمة التالية (يظهر عند الإجابة الصحيحة) -->
             <button id="next-btn" onclick="nextWord()" class="bg-indigo-500 hover:bg-indigo-600 text-white text-xl font-bold py-3 px-6 rounded-full shadow-md hidden cursor-pointer">
                 الكلمة التالية ➡️
             </button>
