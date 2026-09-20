@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اقرأ معي — المعلّم الذكي الصغير</title>
+    <!-- Tailwind CSS للتصميم -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- خط عربي (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-sky-400 to-indigo-600 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-3xl shadow-2xl p-6 md:p-10 w-full max-w-xl text-center border-4 border-amber-300">
+        
+        <!-- العنوان والشعار -->
+        <div class="mb-6">
+            <span class="text-4xl">🌟</span>
+            <h1 class="text-3xl md:text-4xl font-black text-indigo-900 mt-2">اقرأ معي</h1>
+            <p class="text-gray-500 font-bold text-sm">المعلّم الذكي الصغير (مشروع معاذ)</p>
+        </div>
+
+        <!-- منطقة عرض الكلمة والصورة -->
+        <div id="game-card" class="bg-amber-50 rounded-2xl p-8 mb-6 border-2 border-dashed border-amber-200">
+            <div id="word-emoji" class="text-7xl md:text-8xl mb-4">🐪</div>
+            <div id="word-display" class="text-5xl md:text-6xl font-black text-gray-800 tracking-wider">جَمَل</div>
+            <div id="syllables-display" class="text-2xl text-indigo-600 font-bold mt-3 hidden">جَـ — مَـ — ل</div>
+        </div>
+
+        <!-- منطقة التغذية الراجعة والنجوم -->
+        <div id="feedback-area" class="h-16 flex items-center justify-center mb-6">
+            <p id="feedback-text" class="text-xl font-bold text-gray-600">اضغط على الميكروفون واقرأ الكلمة بصوت واضح</p>
+        </div>
+
+        <!-- أزرار التفاعل -->
+        <div class="flex flex-col gap-4">
+            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-bold py-4 px-8 rounded-full shadow-lg transform transition active:scale-95 flex items-center justify-center gap-3 cursor-pointer">
+                <span>🎙️</span> ابدأ القراءة
+            </button>
+            
+            <button id="next-btn" onclick="nextWord()" class="bg-indigo-500 hover:bg-indigo-600 text-white text-xl font-bold py-3 px-6 rounded-full shadow-md hidden cursor-pointer">
+                الكلمة التالية ➡️
+            </button>
+        </div>
+
+        <!-- عداد النجوم -->
+        <div class="mt-6 text-amber-500 text-2xl font-black">
+            النجوم: <span id="score">0</span> ⭐
+        </div>
+
+    </div>
+
+    <!-- ربط ملف JavaScript الخارجي -->
+    <script src="script.js"></script>
+</body>
+</html>
