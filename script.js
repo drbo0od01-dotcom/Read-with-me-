@@ -12,7 +12,6 @@ let score = 0;
 let currentTargetWord = "";
 
 function loadNewWord() {
-    // اختيار كلمة بناءً على الوزن (الكلمات الصعبة تتكرر أكثر ذكياً)
     let totalWeight = wordsPool.reduce((sum, item) => sum + item.weight, 0);
     let randomNum = Math.random() * totalWeight;
     let currentSum = 0;
@@ -47,7 +46,7 @@ function startListening() {
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = 'ar-SA'; // تحديد اللهجة العربية السعودية
+    recognition.lang = 'ar-SA';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
@@ -58,7 +57,6 @@ function startListening() {
         const speechResult = event.results[0][0].transcript.trim();
         console.log("الكلمة المنطوقة: " + speechResult);
         
-        // التحقق من صحة القراءة
         if (speechResult.includes(currentTargetWord) || currentTargetWord.includes(speechResult)) {
             handleCorrect();
         } else {
@@ -86,7 +84,6 @@ function handleCorrect() {
     document.getElementById("mic-btn").classList.add("hidden");
     document.getElementById("next-btn").classList.remove("hidden");
 
-    // تقليل وزن الكلمة لأن الطفل أتقنها
     if (wordsPool[currentIndex].weight > 1) {
         wordsPool[currentIndex].weight -= 1;
     }
@@ -97,13 +94,25 @@ function handleIncorrect() {
     document.getElementById("feedback-text").className = "text-xl font-bold text-rose-500";
     document.getElementById("syllables-display").classList.remove("hidden");
     
-    // زيادة وزن الكلمة لتتكرر لاحقاً بناءً على مبدأ التعلم التكيفي
+    // زيادة وزن الكلمة لتتكرر لاحقاً (التعلم التكيفي)
     wordsPool[currentIndex].weight += 2;
+
+    // تشغيل نطق الكلمة ببطء للمساعدة الصوتية
+    speakWordSlowly(currentTargetWord);
+}
+
+// دالة نطق الكلمة صوتياً عبر متصفح الأيباد
+function speakWordSlowly(text) {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ar-SA'; // اللغة العربية
+        utterance.rate = 0.6;    // سرعة بطيئة عشان الطفل يركز في مخارج الحروف
+        window.speechSynthesis.speak(utterance);
+    }
 }
 
 function nextWord() {
     loadNewWord();
 }
 
-// تشغيل أول كلمة عند تحميل الصفحة
 window.onload = loadNewWord;
