@@ -32,35 +32,47 @@
 
         <!-- منطقة التغذية الراجعة والنجوم -->
         <div id="feedback-area" class="h-16 flex items-center justify-center mb-6">
-            <p id="feedback-text" class="text-xl font-bold text-gray-600">اضغط على الميكروفون واقرأ الكلمة بصوت واضح</p>
+            <p id="feedback-text" class="text-xl font-bold text-gray-600">اضغط على الميكروفون أو جرب أزرار المحاكاة بالأسفل</p>
         </div>
 
         <!-- أزرار التفاعل -->
-        <div class="flex flex-col gap-4">
-            <!-- زر الميكروفون -->
-            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-bold py-4 px-8 rounded-full shadow-lg transform transition active:scale-95 flex items-center justify-center gap-3 cursor-pointer">
-                <span>🎙️</span> ابدأ القراءة
+        <div class="flex flex-col gap-3">
+            <!-- زر الميكروفون الأساسي -->
+            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xl font-bold py-3 px-6 rounded-full shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+                <span>🎙️</span> ابدأ القراءة بالسوت
             </button>
 
-            <!-- زر التخطي (يظهر أثناء المحاولة) -->
-            <button id="skip-btn" onclick="skipWord()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-lg font-bold py-2 px-6 rounded-full shadow-sm transition cursor-pointer">
+            <!-- أزرار تجريبية لتسهيل الفحص على الأيباد -->
+            <div class="flex gap-2 justify-center">
+                <button onclick="handleCorrect()" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2 px-4 rounded-full shadow cursor-pointer">
+                    ✅ محاكاة إجابة صحيحة
+                </button>
+                <button onclick="handleIncorrect()" class="bg-rose-500 hover:bg-rose-600 text-white text-sm font-bold py-2 px-4 rounded-full shadow cursor-pointer">
+                    ❌ محاكاة إجابة خاطئة
+                </button>
+            </div>
+
+            <!-- مكان ظهور زر الاستماع عند الخطأ -->
+            <div id="audio-container" class="my-1"></div>
+
+            <!-- زر التخطي -->
+            <button id="skip-btn" onclick="skipWord()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-base font-bold py-2 px-6 rounded-full shadow-sm transition cursor-pointer">
                 ⏭️ تخطي هذه الكلمة
             </button>
             
-            <!-- زر الكلمة التالية (يظهر عند الإجابة الصحيحة) -->
-            <button id="next-btn" onclick="nextWord()" class="bg-indigo-500 hover:bg-indigo-600 text-white text-xl font-bold py-3 px-6 rounded-full shadow-md hidden cursor-pointer">
+            <!-- زر الكلمة التالية -->
+            <button id="next-btn" onclick="nextWord()" class="bg-indigo-500 hover:bg-indigo-600 text-white text-lg font-bold py-2.5 px-6 rounded-full shadow-md hidden cursor-pointer">
                 الكلمة التالية ➡️
             </button>
         </div>
 
         <!-- عداد النجوم -->
-        <div class="mt-6 text-amber-500 text-2xl font-black">
+        <div class="mt-4 text-amber-500 text-2xl font-black">
             النجوم: <span id="score">0</span> ⭐
         </div>
 
     </div>
 
-    <!-- ربط ملف JavaScript الخارجي -->
     <script src="script.js"></script>
 </body>
 </html>
