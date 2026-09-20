@@ -31,24 +31,22 @@ function loadNewWord() {
     document.getElementById("word-display").innerText = current.word;
     document.getElementById("syllables-display").innerText = current.syllables;
     document.getElementById("syllables-display").classList.add("hidden");
-    document.getElementById("feedback-text").innerText = "اضغط على الميكروفون واقرأ الكلمة بصوت واضح";
+    document.getElementById("feedback-text").innerText = "اضغط على الميكروفون أو جرب أزرار المحاكاة";
     document.getElementById("feedback-text").className = "text-xl font-bold text-gray-600";
     
     document.getElementById("mic-btn").classList.remove("hidden");
     document.getElementById("skip-btn").classList.remove("hidden");
     document.getElementById("next-btn").classList.add("hidden");
     
-    // إخفاء زر الاستماع لو كان ظاهراً
-    if(document.getElementById("listen-audio-btn")) {
-        document.getElementById("listen-audio-btn").classList.add("hidden");
-    }
+    // مسح زر الاستماع الصوتي عند تحميل كلمة جديدة
+    document.getElementById("audio-container").innerHTML = "";
 }
 
 function startListening() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     
     if (!SpeechRecognition) {
-        alert("متصفحك لا يدعم التعرف الصوتي المباشر، يُفضل استخدام متصفح Safari أو Chrome.");
+        alert("متصفحك لا يدعم التعرف الصوتي المباشر، استعمل أزرار المحاكاة أدناه للاختبار الفوري.");
         return;
     }
 
@@ -62,8 +60,6 @@ function startListening() {
 
     recognition.onresult = function(event) {
         const speechResult = event.results[0][0].transcript.trim();
-        console.log("الكلمة المنطوقة: " + speechResult);
-        
         if (speechResult.includes(currentTargetWord) || currentTargetWord.includes(speechResult)) {
             handleCorrect();
         } else {
@@ -71,8 +67,8 @@ function startListening() {
         }
     };
 
-    recognition.onerror = function(event) {
-        document.getElementById("feedback-text").innerText = "لم أستطع سماعك جيداً، حاول مرة أخرى!";
+    recognition.onerror = function() {
+        document.getElementById("feedback-text").innerText = "تعذر التعرف الصوتي، جرب زر المحاكاة الخاطئة للاختبار!";
         document.getElementById("mic-btn").classList.remove("animate-pulse", "bg-amber-500");
     };
 
@@ -92,9 +88,7 @@ function handleCorrect() {
     document.getElementById("mic-btn").classList.add("hidden");
     document.getElementById("skip-btn").classList.add("hidden");
     document.getElementById("next-btn").classList.remove("hidden");
-    if(document.getElementById("listen-audio-btn")) {
-        document.getElementById("listen-audio-btn").classList.add("hidden");
-    }
+    document.getElementById("audio-container").innerHTML = "";
 
     if (wordsPool[currentIndex].weight > 1) {
         wordsPool[currentIndex].weight -= 1;
@@ -108,33 +102,24 @@ function handleIncorrect() {
     
     wordsPool[currentIndex].weight += 2;
 
-    // إظهار زر خاص بالاستماع الصوتي عند الخطأ لضمان عمله في الأيباد
-    let listenBtn = document.getElementById("listen-audio-btn");
-    if (!listenBtn) {
-        listenBtn = document.createElement("button");
-        listenBtn.id = "listen-audio-btn";
-        listenBtn.className = "bg-sky-500 hover:bg-sky-600 text-white text-lg font-bold py-2 px-6 rounded-full shadow-md transition cursor-pointer mb-2";
-        listenBtn.innerHTML = "🔊 اسمع الكلمة ببطء";
-        listenBtn.onclick = function() { speakWordSlowly(currentTargetWord); };
-        
-        // إدراجه قبل زر التخطي
-        const skipBtn = document.getElementById("skip-btn");
-        skipBtn.parentNode.insertBefore(listenBtn, skipBtn);
-    } else {
-        listenBtn.classList.remove("hidden");
-    }
+    // إظهار زر الاستماع الصوتي بوضوح في المكان المخصص
+    const audioContainer = document.getElementById("audio-container");
+    audioContainer.innerHTML = `
+        <button onclick="speakWordSlowly('${currentTargetWord}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
+            🔊 اضغط هنا للاستماع للكلمة ببطء
+        </button>
+    `;
 }
 
-// دالة نطق الكلمة المضمونة للأيباد
 function speakWordSlowly(text) {
     if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // إيقاف أي صوت سابق قيد التشغيل
+        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'ar'; // استخدام اللغة العربية العامة لضمان توافقها مع نظام الأيباد
-        utterance.rate = 0.5;   // سرعة بطيئة وواضحة جداً
+        utterance.lang = 'ar';
+        utterance.rate = 0.5;
         window.speechSynthesis.speak(utterance);
     } else {
-        alert("خاصية الصوت غير متوفرة في هذا المتصفح.");
+        alert("خاصية الصوت غير مدعومة في متصفحك الحالي.");
     }
 }
 
