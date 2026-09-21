@@ -43,19 +43,24 @@
 
         <!-- منطقة التغذية الراجعة -->
         <div id="feedback-area" class="h-14 flex items-center justify-center mb-6">
-            <p id="feedback-text" class="text-lg md:text-xl font-bold text-gray-600">انطق الكلمة بصوت واضح، ثم تحقق من إجابتك:</p>
+            <p id="feedback-text" class="text-lg md:text-xl font-bold text-gray-600">انطق الكلمة أو اضغط تحقق:</p>
         </div>
 
-        <!-- أزرار التفاعل الحقيقية والنظيفة -->
+        <!-- أزرار التفاعل الحقيقية -->
         <div class="flex flex-col gap-3">
             
-            <!-- أزرار التقييم الفعلي (بدون محاكاة) -->
+            <!-- زر الميكروفون الأساسي (التحقق الصوتي) -->
+            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-lg font-bold py-3.5 px-6 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+                <span>🎙️</span> اضغط هنا وابدأ القراءة بصوتك
+            </button>
+
+            <!-- أزرار التقييم المباشر (صح / خطأ) -->
             <div class="flex gap-3 justify-center">
-                <button onclick="handleCorrect()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-lg font-bold py-3.5 px-4 rounded-2xl shadow-lg transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-2">
-                    ✅ قرأتها صح
+                <button onclick="handleCorrect()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-base font-bold py-3 px-4 rounded-2xl shadow transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1">
+                    ✅ قرأها صح
                 </button>
-                <button onclick="handleIncorrect()" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white text-lg font-bold py-3.5 px-4 rounded-2xl shadow-lg transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-2">
-                    ❌ أخطأت فيها
+                <button onclick="handleIncorrect()" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white text-base font-bold py-3 px-4 rounded-2xl shadow transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1">
+                    ❌ أخطأ فيها
                 </button>
             </div>
 
@@ -80,9 +85,9 @@
 
     </div>
 
-    <!-- رقم الإصدار v1.0.16 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.17 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-3 right-4 bg-black/30 backdrop-blur-md text-white text-xs font-mono px-3 py-1.5 rounded-full shadow-lg border border-white/10">
-        v1.0.16 (UI & FX) 🚀
+        v1.0.17 (Voice + UI) 🚀
     </div>
 
     <script>
@@ -142,7 +147,6 @@
             currentTargetWord = current.word;
             currentVocalizedText = current.vocalized;
 
-            // تأثير بصرية سلسة عند تغيير الكلمة
             const card = document.getElementById("game-card");
             card.classList.add("scale-95", "opacity-50");
             
@@ -151,15 +155,54 @@
                 document.getElementById("word-display").innerText = current.word;
                 document.getElementById("syllables-display").innerText = current.syllables;
                 document.getElementById("syllables-display").classList.add("hidden");
-                document.getElementById("feedback-text").innerText = "انطق الكلمة بصوت واضح، ثم تحقق من إجابتك:";
+                document.getElementById("feedback-text").innerText = "انطق الكلمة أو اضغط تحقق:";
                 document.getElementById("feedback-text").className = "text-lg md:text-xl font-bold text-gray-600";
                 
                 card.classList.remove("scale-95", "opacity-50");
             }, 150);
 
+            document.getElementById("mic-btn").classList.remove("hidden");
             document.getElementById("skip-btn").classList.remove("hidden");
             document.getElementById("next-btn").classList.add("hidden");
             document.getElementById("audio-container").innerHTML = "";
+        }
+
+        // دالة التحقق الصوتي عبر الميكروفون
+        function startListening() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                alert("متصفحك لا يدعم التحقق الصوتي المباشر، يجدر استخدام أزرار التقييم أدناه.");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ar-SA';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            document.getElementById("feedback-text").innerText = "جاري الاستماع لصوتك... 🎧";
+            document.getElementById("mic-btn").classList.add("animate-pulse", "bg-amber-500");
+
+            recognition.onresult = function(event) {
+                const speechResult = event.results[0][0].transcript.trim();
+                if (speechResult.includes(currentTargetWord)) {
+                    handleCorrect();
+                } else {
+                    handleIncorrect();
+                }
+            };
+
+            recognition.onerror = function() {
+                document.getElementById("feedback-text").innerText = "تعذر التقاط الصوت، جرب التقييم اليدوي أو حاول مجدداً!";
+                document.getElementById("mic-btn").classList.remove("animate-pulse", "bg-amber-500");
+            };
+
+            recognition.onend = function() {
+                document.getElementById("mic-btn").classList.remove("animate-pulse", "bg-amber-500");
+            };
+
+            recognition.start();
         }
 
         function handleCorrect() {
@@ -168,11 +211,11 @@
             document.getElementById("feedback-text").innerText = "أحسنت يا بطل! إجابة صحيحة ⭐";
             document.getElementById("feedback-text").className = "text-2xl font-black text-emerald-600 animate-bounce";
             
-            // تأثير بصري للبطاقة عند النجاح
             const card = document.getElementById("game-card");
             card.classList.add("bg-emerald-50", "border-emerald-300");
             setTimeout(() => card.classList.remove("bg-emerald-50", "border-emerald-300"), 600);
 
+            document.getElementById("mic-btn").classList.add("hidden");
             document.getElementById("skip-btn").classList.add("hidden");
             document.getElementById("next-btn").classList.remove("hidden");
             document.getElementById("audio-container").innerHTML = "";
@@ -187,7 +230,6 @@
             document.getElementById("feedback-text").className = "text-xl font-bold text-rose-500";
             document.getElementById("syllables-display").classList.remove("hidden");
             
-            // تأثير اهتزاز الشاشة عند الخطأ
             const container = document.getElementById("main-container");
             container.classList.add("animate-shake");
             setTimeout(() => container.classList.remove("animate-shake"), 400);
