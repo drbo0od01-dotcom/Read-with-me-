@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Cairo', sans-serif; }
-        /* تأثير اهتزاز خفيف عند الخطأ */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             20%, 60% { transform: translateX(-8px); }
@@ -19,75 +18,76 @@
         .animate-shake { animation: shake 0.4s ease-in-out; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex items-center justify-center p-3 md:p-6 relative overflow-x-hidden">
 
     <!-- خلفية تفاعلية بصرية لطيفة -->
-    <div class="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
-    <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-yellow-300/10 rounded-full blur-2xl"></div>
+    <div class="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+    <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-yellow-300/10 rounded-full blur-2xl pointer-events-none"></div>
 
-    <div id="main-container" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 md:p-10 w-full max-w-xl text-center border-4 border-amber-300 transition-all duration-300">
+    <!-- حاوية التطبيق المتوسطة للشاشة بالكامل -->
+    <div id="main-container" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-5 md:p-8 w-full max-w-md mx-auto text-center border-4 border-amber-300 transition-all duration-300 my-auto">
         
         <!-- العنوان والشعار -->
-        <div class="mb-4">
-            <span class="text-4xl inline-block animate-bounce">🌟</span>
-            <h1 class="text-3xl md:text-4xl font-black text-indigo-900 mt-1">اقرأ معي</h1>
-            <p class="text-gray-500 font-bold text-sm">المعلّم الذكي الصغير (مشروع معاذ)</p>
+        <div class="mb-3">
+            <span class="text-3xl inline-block animate-bounce">🌟</span>
+            <h1 class="text-2xl md:text-3xl font-black text-indigo-900 mt-1">اقرأ معي</h1>
+            <p class="text-gray-500 font-bold text-xs">المعلّم الذكي الصغير (مشروع معاذ)</p>
         </div>
 
-        <!-- منطقة عرض الكلمة والصورة مع تأثيرات بصرية سلسة -->
-        <div id="game-card" class="bg-amber-50/80 rounded-2xl p-6 mb-6 border-2 border-dashed border-amber-300 shadow-inner transition-transform duration-300">
-            <div id="word-emoji" class="text-7xl md:text-8xl mb-3 transition-transform duration-300 hover:scale-110">🐪</div>
-            <div id="word-display" class="text-5xl md:text-6xl font-black text-gray-800 tracking-wider transition-all duration-300">جَمَل</div>
-            <div id="syllables-display" class="text-2xl text-indigo-600 font-bold mt-3 hidden bg-indigo-50 py-2 rounded-xl border border-indigo-100">جَـ — مَـ — لْ</div>
+        <!-- منطقة عرض الكلمة والصورة -->
+        <div id="game-card" class="bg-amber-50/80 rounded-2xl p-5 mb-4 border-2 border-dashed border-amber-300 shadow-inner transition-transform duration-300">
+            <div id="word-emoji" class="text-6xl md:text-7xl mb-2 transition-transform duration-300 hover:scale-110">🐪</div>
+            <div id="word-display" class="text-4xl md:text-5xl font-black text-gray-800 tracking-wider transition-all duration-300">جَمَل</div>
+            <div id="syllables-display" class="text-xl text-indigo-600 font-bold mt-2 hidden bg-indigo-50 py-1.5 rounded-xl border border-indigo-100">جَـ — مَـ — لْ</div>
         </div>
 
         <!-- منطقة التغذية الراجعة -->
-        <div id="feedback-area" class="h-14 flex items-center justify-center mb-6">
-            <p id="feedback-text" class="text-lg md:text-xl font-bold text-gray-600">انطق الكلمة أو اضغط تحقق:</p>
+        <div id="feedback-area" class="h-12 flex items-center justify-center mb-4">
+            <p id="feedback-text" class="text-base md:text-lg font-bold text-gray-600">انطق الكلمة أو اضغط تحقق:</p>
         </div>
 
-        <!-- أزرار التفاعل الحقيقية -->
-        <div class="flex flex-col gap-3">
+        <!-- أزرار التفاعل -->
+        <div class="flex flex-col gap-2.5">
             
             <!-- زر الميكروفون الأساسي (التحقق الصوتي) -->
-            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-lg font-bold py-3.5 px-6 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold py-3 px-4 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                 <span>🎙️</span> اضغط هنا وابدأ القراءة بصوتك
             </button>
 
             <!-- أزرار التقييم المباشر (صح / خطأ) -->
-            <div class="flex gap-3 justify-center">
-                <button onclick="handleCorrect()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-base font-bold py-3 px-4 rounded-2xl shadow transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1">
+            <div class="flex gap-2 justify-center">
+                <button onclick="handleCorrect()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2.5 px-3 rounded-2xl shadow transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1">
                     ✅ قرأها صح
                 </button>
-                <button onclick="handleIncorrect()" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white text-base font-bold py-3 px-4 rounded-2xl shadow transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1">
+                <button onclick="handleIncorrect()" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white text-sm font-bold py-2.5 px-3 rounded-2xl shadow transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1">
                     ❌ أخطأ فيها
                 </button>
             </div>
 
             <!-- مكان ظهور زر الاستماع عند الخطأ -->
-            <div id="audio-container" class="my-1"></div>
+            <div id="audio-container" class="my-0.5"></div>
 
             <!-- زر التخطي -->
-            <button id="skip-btn" onclick="skipWord()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-sm font-bold py-2 px-6 rounded-full shadow-sm transition cursor-pointer self-center">
+            <button id="skip-btn" onclick="skipWord()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs font-bold py-1.5 px-5 rounded-full shadow-sm transition cursor-pointer self-center">
                 ⏭️ تخطي هذه الكلمة
             </button>
             
             <!-- زر الكلمة التالية -->
-            <button id="next-btn" onclick="nextWord()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-3 px-6 rounded-full shadow-lg hidden cursor-pointer transform hover:scale-105 transition">
+            <button id="next-btn" onclick="nextWord()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-2.5 px-5 rounded-full shadow-lg hidden cursor-pointer transform hover:scale-105 transition">
                 الكلمة التالية ➡️
             </button>
         </div>
 
         <!-- عداد النجوم وتصميمها المطور -->
-        <div class="mt-5 flex items-center justify-center gap-2 text-amber-500 text-2xl font-black bg-amber-50 py-2 px-4 rounded-2xl border border-amber-200 shadow-sm w-fit mx-auto">
+        <div class="mt-4 flex items-center justify-center gap-1.5 text-amber-500 text-xl font-black bg-amber-50 py-1.5 px-3 rounded-2xl border border-amber-200 shadow-sm w-fit mx-auto">
             <span>⭐</span> النجوم: <span id="score" class="text-indigo-900">0</span>
         </div>
 
     </div>
 
-    <!-- رقم الإصدار v1.0.17 في الزاوية السفلية اليمنى -->
-    <div class="absolute bottom-3 right-4 bg-black/30 backdrop-blur-md text-white text-xs font-mono px-3 py-1.5 rounded-full shadow-lg border border-white/10">
-        v1.0.17 (Voice + UI) 🚀
+    <!-- رقم الإصدار v1.0.18 في الزاوية السفلية اليمنى -->
+    <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
+        v1.0.18 (Centered) 🚀
     </div>
 
     <script>
@@ -156,7 +156,7 @@
                 document.getElementById("syllables-display").innerText = current.syllables;
                 document.getElementById("syllables-display").classList.add("hidden");
                 document.getElementById("feedback-text").innerText = "انطق الكلمة أو اضغط تحقق:";
-                document.getElementById("feedback-text").className = "text-lg md:text-xl font-bold text-gray-600";
+                document.getElementById("feedback-text").className = "text-base md:text-lg font-bold text-gray-600";
                 
                 card.classList.remove("scale-95", "opacity-50");
             }, 150);
@@ -167,12 +167,11 @@
             document.getElementById("audio-container").innerHTML = "";
         }
 
-        // دالة التحقق الصوتي عبر الميكروفون
         function startListening() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             
             if (!SpeechRecognition) {
-                alert("متصفحك لا يدعم التحقق الصوتي المباشر، يجدر استخدام أزرار التقييم أدناه.");
+                alert("متصفحك لا يدعم التحقق الصوتي المباشر، يرجى استخدام أزرار التقييم أدناه.");
                 return;
             }
 
@@ -194,7 +193,7 @@
             };
 
             recognition.onerror = function() {
-                document.getElementById("feedback-text").innerText = "تعذر التقاط الصوت، جرب التقييم اليدوي أو حاول مجدداً!";
+                document.getElementById("feedback-text").innerText = "تعذر التقاط الصوت، جرب التقييم اليدوي!";
                 document.getElementById("mic-btn").classList.remove("animate-pulse", "bg-amber-500");
             };
 
@@ -209,7 +208,7 @@
             score += 10;
             document.getElementById("score").innerText = score;
             document.getElementById("feedback-text").innerText = "أحسنت يا بطل! إجابة صحيحة ⭐";
-            document.getElementById("feedback-text").className = "text-2xl font-black text-emerald-600 animate-bounce";
+            document.getElementById("feedback-text").className = "text-xl md:text-2xl font-black text-emerald-600 animate-bounce";
             
             const card = document.getElementById("game-card");
             card.classList.add("bg-emerald-50", "border-emerald-300");
@@ -226,9 +225,8 @@
         }
 
         function handleIncorrect() {
-            document.getElementById("feedback-text").innerText = "لا بأس يا بطل، راقب المقاطع الصوتية وحاول مجدداً:";
-            document.getElementById("feedback-text").className = "text-xl font-bold text-rose-500";
-            document.getElementById("syllables-display").classList.remove("hidden");
+            document.getElementById("feedback-text").innerText = "لا بأس يا بطل، راقب المقاطع الصوتية:";
+            document.getElementById("feedback-text").className = "text-base md:text-lg font-bold text-rose-500";
             
             const container = document.getElementById("main-container");
             container.classList.add("animate-shake");
@@ -238,7 +236,7 @@
 
             const audioContainer = document.getElementById("audio-container");
             audioContainer.innerHTML = `
-                <button onclick="playVocalizedSpeech('${currentVocalizedText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2.5 px-6 rounded-full shadow-md transition transform active:scale-95 cursor-pointer animate-pulse mx-auto flex items-center gap-2">
+                <button onclick="playVocalizedSpeech('${currentVocalizedText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-sm font-bold py-2 px-4 rounded-full shadow-md transition transform active:scale-95 cursor-pointer animate-pulse mx-auto flex items-center gap-1.5">
                     🔊 استمع بالحرف الأخير الساكن
                 </button>
             `;
