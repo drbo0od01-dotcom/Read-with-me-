@@ -43,11 +43,10 @@
             </div>
         </div>
 
-        <!-- منطقة عرض الكلمة والصورة -->
-        <div id="game-card" class="bg-amber-50/80 rounded-2xl p-4 mb-3 border-2 border-dashed border-amber-300 shadow-inner transition-transform duration-300">
-            <div id="word-emoji" class="text-6xl md:text-7xl mb-2 transition-transform duration-300 hover:scale-110">🐪</div>
-            <div id="word-display" class="text-4xl md:text-5xl font-black text-gray-800 tracking-wider transition-all duration-300">جَمَل</div>
-            <div id="syllables-display" class="text-xl text-indigo-600 font-bold mt-2 hidden bg-indigo-50 py-1.5 rounded-xl border border-indigo-100">جَـ — مَـ — لْ</div>
+        <!-- منطقة عرض الكلمة فقط (بدون صور) -->
+        <div id="game-card" class="bg-amber-50/80 rounded-2xl p-6 mb-3 border-2 border-dashed border-amber-300 shadow-inner transition-transform duration-300">
+            <div id="word-display" class="text-5xl md:text-6xl font-black text-gray-800 tracking-wider transition-all duration-300 my-2">جَمَل</div>
+            <div id="syllables-display" class="text-xl text-indigo-600 font-bold mt-3 hidden bg-indigo-50 py-1.5 rounded-xl border border-indigo-100">جَـ — مَـ — لْ</div>
         </div>
 
         <!-- منطقة التغذية الراجعة -->
@@ -84,67 +83,64 @@
 
     </div>
 
-    <!-- رقم الإصدار v1.0.21 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.22 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
-        v1.0.21 (50 Words + Stats) 🚀
+        v1.0.22 (No Images + Shaddah Kasr) 🚀
     </div>
 
     <script>
-        // قائمة الكلمات الكاملة (50 كلمة مشكلة مع إسكان الحرف الأخير)
+        // قائمة الكلمات الـ 50 (تم تحديث بطيخ لتصبح بِطِِّيخْ، وبدون صور)
         let wordsPool = [
-            // الـ 30 كلمة السابقة
-            { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", weight: 1 },
-            { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
-            { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ةْ", vocalized: "تُفَّاحَةْ", weight: 1 },
-            { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — سْ", vocalized: "شَمْسْ", weight: 1 },
-            { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — بْ", vocalized: "كِتَابْ", weight: 1 },
-            { word: "أسد", emoji: "🦁", syllables: "أَ — سَـ — دْ", vocalized: "أَسَدْ", weight: 1 },
-            { word: "كرة", emoji: "⚽", syllables: "كُـ — رَ — ةْ", vocalized: "كُرَةْ", weight: 1 },
-            { word: "بيت", emoji: "🏠", syllables: "بَـ — يْـ — تْ", vocalized: "بَيْتْ", weight: 1 },
-            { word: "باب", emoji: "🚪", syllables: "بَـ — ا — بْ", vocalized: "بَابْ", weight: 1 },
-            { word: "موز", emoji: "🍌", syllables: "مَـ — وْ — زْ", vocalized: "مَوْزْ", weight: 1 },
-            { word: "برتقال", emoji: "🍊", syllables: "بُـ — رْ — تُـ — قَـ — ا — لْ", vocalized: "بُرْتُقَالْ", weight: 1 },
-            { word: "حليب", emoji: "🥛", syllables: "حَـ — لِـ — ي — بْ", vocalized: "حَلِيبْ", weight: 1 },
-            { word: "ماء", emoji: "💧", syllables: "مَـ — ا — ءْ", vocalized: "مَاءْ", weight: 1 },
-            { word: "قمر", emoji: "🌙", syllables: "قَـ — مَـ — رْ", vocalized: "قَمَرْ", weight: 1 },
-            { word: "نجمة", emoji: "⭐", syllables: "نَـ — جْـ — مَـ — ةْ", vocalized: "نَجْمَةْ", weight: 1 },
-            { word: "زهرة", emoji: "🌸", syllables: "زَ — هْـ — رَ — ةْ", vocalized: "زَهْرَةْ", weight: 1 },
-            { word: "شجرة", emoji: "🌳", syllables: "شَـ — جَـ — رَ — ةْ", vocalized: "شَجَرَةْ", weight: 1 },
-            { word: "سمكة", emoji: "🐟", syllables: "سَـ — مَـ — كَـ — ةْ", vocalized: "سَمَكَةْ", weight: 1 },
-            { word: "عصفور", emoji: "🐦", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", weight: 1 },
-            { word: "حصان", emoji: "🐎", syllables: "حِـ — صَـ — ا — نْ", vocalized: "حِصَانْ", weight: 1 },
-            { word: "دجاجة", emoji: "🐔", syllables: "دَ — جَـ — ا — جَـ — ةْ", vocalized: "دَجَاجَةْ", weight: 1 },
-            { word: "حقيبة", emoji: "🎒", syllables: "حَـ — قِـ — ي — بَـ — ةْ", vocalized: "حَقِيبَةْ", weight: 1 },
-            { word: "كرسي", emoji: "🪑", syllables: "كُـ — رْ — سِـ — يْ", vocalized: "كُرْسِيّْ", weight: 1 },
-            { word: "قلم", emoji: "✒️", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
-            { word: "مدرسة", emoji: "🏫", syllables: "مَـ — دْ — رَ — سَـ — ةْ", vocalized: "مَدْرَسَةْ", weight: 1 },
-            { word: "دمية", emoji: "🧸", syllables: "دُ — مْـ — يَـ — ةْ", vocalized: "دُمْيَةْ", weight: 1 },
-            { word: "سيارة", emoji: "🚗", syllables: "سَـ — يَّـ — ا — رَ — ةْ", vocalized: "سَيَّارَةْ", weight: 1 },
-            { word: "طائرة", emoji: "✈️", syllables: "طَـ — ا — ئِـ — رَ — ةْ", vocalized: "طَائِرَةْ", weight: 1 },
-            { word: "قارب", emoji: "⛵", syllables: "قَـ — ا — رِ — بْ", vocalized: "قَارِبْ", weight: 1 },
-            { word: "علم", emoji: "🇸🇦", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", weight: 1 },
-            
-            // الـ 20 كلمة الجديدة الإضافية
-            { word: "فيل", emoji: "🐘", syllables: "فِـ — ي — لْ", vocalized: "فِيلْ", weight: 1 },
-            { word: "قرد", emoji: "🐵", syllables: "قَـ — رْ — دْ", vocalized: "قَرْدْ", weight: 1 },
-            { word: "زرافة", emoji: "🦒", syllables: "زَ — رَ — ا — فَـ — ةْ", vocalized: "زَرَافَةْ", weight: 1 },
-            { word: "بقرة", emoji: "🐄", syllables: "بَـ — قَـ — رَ — ةْ", vocalized: "بَقَرَةْ", weight: 1 },
-            { word: "خروف", emoji: "🐑", syllables: "خَـ — رُ — و — فْ", vocalized: "خَرُوفْ", weight: 1 },
-            { word: "عنب", emoji: "🍇", syllables: "عِـ — نَـ — بْ", vocalized: "عِنَبْ", weight: 1 },
-            { word: "بطيخ", emoji: "🍉", syllables: "بِـ — طَـ — ي — خْ", vocalized: "بِطِيخْ", weight: 1 },
-            { word: "خوخ", emoji: "🍑", syllables: "خَـ — وْ — خْ", vocalized: "خَوْخْ", weight: 1 },
-            { word: "تمر", emoji: "🫘", syllables: "تَـ — مَـ — رْ", vocalized: "تَمَرْ", weight: 1 },
-            { word: "خبز", emoji: "🍞", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", weight: 1 },
-            { word: "جبن", emoji: "🧀", syllables: "جُـ — بْـ — نْ", vocalized: "جُبْنْ", weight: 1 },
-            { word: "بيض", emoji: "🥚", syllables: "بَـ — يْـ — ضْ", vocalized: "بَيْضْ", weight: 1 },
-            { word: "مفتاح", emoji: "🔑", syllables: "مِـ — فْـ — تَـ — ا — حْ", vocalized: "مِفْتَاحْ", weight: 1 },
-            { word: "قفل", emoji: "🔒", syllables: "قَـ — فْـ — لْ", vocalized: "قَفْلْ", weight: 1 },
-            { word: "ساعة", emoji: "⏰", syllables: "سَـ — ا — عَـ — ةْ", vocalized: "سَاعَةْ", weight: 1 },
-            { word: "هاتف", emoji: "📱", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", weight: 1 },
-            { word: "قلم", emoji: "🖍️", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", weight: 1 },
-            { word: "دفتر", emoji: "📓", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", weight: 1 },
-            { word: "مسطرة", emoji: "📏", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", weight: 1 },
-            { word: "مقص", emoji: "✂️", syllables: "مِـ — قْـ — صْ", vocalized: "مِقْصْ", weight: 1 }
+            { word: "جَمَل", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", weight: 1 },
+            { word: "قلم", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
+            { word: "تفاحة", syllables: "تُـ — فَـ — ا — حَـ — ةْ", vocalized: "تُفَّاحَةْ", weight: 1 },
+            { word: "شمس", syllables: "شَـ — مْـ — سْ", vocalized: "شَمْسْ", weight: 1 },
+            { word: "كتاب", syllables: "كِـ — تَـ — ا — بْ", vocalized: "كِتَابْ", weight: 1 },
+            { word: "أسد", syllables: "أَ — سَـ — دْ", vocalized: "أَسَدْ", weight: 1 },
+            { word: "كرة", syllables: "كُـ — رَ — ةْ", vocalized: "كُرَةْ", weight: 1 },
+            { word: "بيت", syllables: "بَـ — يْـ — تْ", vocalized: "بَيْتْ", weight: 1 },
+            { word: "باب", syllables: "بَـ — ا — بْ", vocalized: "بَابْ", weight: 1 },
+            { word: "موز", syllables: "مَـ — وْ — زْ", vocalized: "مَوْزْ", weight: 1 },
+            { word: "برتقال", syllables: "بُـ — رْ — تُـ — قَـ — ا — لْ", vocalized: "بُرْتُقَالْ", weight: 1 },
+            { word: "حليب", syllables: "حَـ — لِـ — ي — بْ", vocalized: "حَلِيبْ", weight: 1 },
+            { word: "ماء", syllables: "مَـ — ا — ءْ", vocalized: "مَاءْ", weight: 1 },
+            { word: "قمر", syllables: "قَـ — مَـ — رْ", vocalized: "قَمَرْ", weight: 1 },
+            { word: "نجمة", syllables: "نَـ — جْـ — مَـ — ةْ", vocalized: "نَجْمَةْ", weight: 1 },
+            { word: "زهرة", syllables: "زَ — هْـ — رَ — ةْ", vocalized: "زَهْرَةْ", weight: 1 },
+            { word: "شجرة", syllables: "شَـ — جَـ — رَ — ةْ", vocalized: "شَجَرَةْ", weight: 1 },
+            { word: "سمكة", syllables: "سَـ — مَـ — كَـ — ةْ", vocalized: "سَمَكَةْ", weight: 1 },
+            { word: "عصفور", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", weight: 1 },
+            { word: "حصان", syllables: "حِـ — صَـ — ا — نْ", vocalized: "حِصَانْ", weight: 1 },
+            { word: "دجاجة", syllables: "دَ — جَـ — ا — جَـ — ةْ", vocalized: "دَجَاجَةْ", weight: 1 },
+            { word: "حقيبة", syllables: "حَـ — قِـ — ي — بَـ — ةْ", vocalized: "حَقِيبَةْ", weight: 1 },
+            { word: "كرسي", syllables: "كُـ — رْ — سِـ — يْ", vocalized: "كُرْسِيّْ", weight: 1 },
+            { word: "قلم", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
+            { word: "مدرسة", syllables: "مَـ — دْ — رَ — سَـ — ةْ", vocalized: "مَدْرَسَةْ", weight: 1 },
+            { word: "دمية", syllables: "دُ — مْـ — يَـ — ةْ", vocalized: "دُمْيَةْ", weight: 1 },
+            { word: "سيارة", syllables: "سَـ — يَّـ — ا — رَ — ةْ", vocalized: "سَيَّارَةْ", weight: 1 },
+            { word: "طائرة", syllables: "طَـ — ا — ئِـ — رَ — ةْ", vocalized: "طَائِرَةْ", weight: 1 },
+            { word: "قارب", syllables: "قَـ — ا — رِ — بْ", vocalized: "قَارِبْ", weight: 1 },
+            { word: "علم", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", weight: 1 },
+            { word: "فيل", syllables: "فِـ — ي — لْ", vocalized: "فِيلْ", weight: 1 },
+            { word: "قرد", syllables: "قَـ — رْ — دْ", vocalized: "قَرْدْ", weight: 1 },
+            { word: "زرافة", syllables: "زَ — رَ — ا — فَـ — ةْ", vocalized: "زَرَافَةْ", weight: 1 },
+            { word: "بقرة", syllables: "بَـ — قَـ — رَ — ةْ", vocalized: "بَقَرَةْ", weight: 1 },
+            { word: "خروف", syllables: "خَـ — رُ — و — فْ", vocalized: "خَرُوفْ", weight: 1 },
+            { word: "عنب", syllables: "عِـ — نَـ — بْ", vocalized: "عِنَبْ", weight: 1 },
+            { word: "بطيخ", syllables: "بِـ — طِّـ — ي — خْ", vocalized: "بِطِِّيخْ", weight: 1 }, // تم تعديل الشدة والكسر على الطاء
+            { word: "خوخ", syllables: "خَـ — وْ — خْ", vocalized: "خَوْخْ", weight: 1 },
+            { word: "تمر", syllables: "تَـ — مَـ — رْ", vocalized: "تَمَرْ", weight: 1 },
+            { word: "خبز", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", weight: 1 },
+            { word: "جبن", syllables: "جُـ — بْـ — نْ", vocalized: "جُبْنْ", weight: 1 },
+            { word: "بيض", syllables: "بَـ — يْـ — ضْ", vocalized: "بَيْضْ", weight: 1 },
+            { word: "مفتاح", syllables: "مِـ — فْـ — تَـ — ا — حْ", vocalized: "مِفْتَاحْ", weight: 1 },
+            { word: "قفل", syllables: "قَـ — فْـ — لْ", vocalized: "قَفْلْ", weight: 1 },
+            { word: "ساعة", syllables: "سَـ — ا — عَـ — ةْ", vocalized: "سَاعَةْ", weight: 1 },
+            { word: "هاتف", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", weight: 1 },
+            { word: "تلوين", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", weight: 1 },
+            { word: "دفتر", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", weight: 1 },
+            { word: "مسطرة", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", weight: 1 },
+            { word: "مقص", syllables: "مِـ — قْـ — صْ", vocalized: "مِقْصْ", weight: 1 }
         ];
 
         let currentIndex = 0;
@@ -184,7 +180,6 @@
             card.classList.add("scale-95", "opacity-50");
             
             setTimeout(() => {
-                document.getElementById("word-emoji").innerText = current.emoji;
                 document.getElementById("word-display").innerText = current.word;
                 document.getElementById("syllables-display").innerText = current.syllables;
                 document.getElementById("syllables-display").classList.add("hidden");
