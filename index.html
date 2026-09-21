@@ -116,13 +116,12 @@
         </div>
     </div>
 
-    <!-- رقم الإصدار v1.0.26 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.27 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
-        v1.0.26 (Strict Sukun) 🚀
+        v1.0.27 (Exact Sukun Match) 🚀
     </div>
 
     <script>
-        // قائمة الكلمات الكاملة الـ 50 (جميعها تنتهي بحرف ساكن للوقف الفصيح)
         const masterWordsPool = [
             { word: "جَمَلْ", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", active: true },
             { word: "قَلَمْ", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
@@ -173,7 +172,7 @@
             { word: "تَلْوِينْ", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", active: true },
             { word: "دَفْتَرْ", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", active: true },
             { word: "مِسْطَرَةْ", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", active: true },
-            { word: "مِقَصّْ", syllables: "مِـ — قَـ — صْـ — صْ", vocalized: "مِقَصّْ", active: true } // مقص بكسر الميم وفتح القاف وتشديد الصاد مع السكون
+            { word: "مِقَصْ", syllables: "مِـ — قَـ — صْ", vocalized: "مِقَصْ", active: true } // مقص بكسر الميم وفتح القاف وسكون الصاد
         ];
 
         let activeWordsPool = [];
@@ -291,12 +290,22 @@
             document.getElementById("mic-btn").classList.add("animate-pulse", "bg-amber-500");
 
             recognition.onresult = function(event) {
-                const speechResult = event.results[0][0].transcript.trim();
-                // مقارنة النص بدون علامات السكون ليقبل النظام نطق الطفل
-                const cleanTarget = currentTargetWord.replace(/[ًٌٍَُِّْ]/g, '');
-                const cleanResult = speechResult.replace(/[ًٌٍَُِّْ]/g, '');
+                let speechResult = event.results[0][0].transcript.trim();
                 
-                if (speechResult.includes(currentTargetWord) || cleanResult.includes(cleanTarget)) {
+                // تنظيف النصوص تماماً من التشكيل، التنوين، وحروف العلة الزائدة لضمان مطابقة دقيقة 100%
+                const normalizeArabic = (text) => {
+                    return text
+                        .replace(/[ًٌٍَُِّْ]/g, '') // إزالة كل الحركات والتنوين والتشديد
+                        .replace(/أ|إ|آ/g, 'ا')
+                        .replace(/ة/g, 'ه')
+                        .replace(/ى/g, 'ي')
+                        .trim();
+                };
+
+                const cleanTarget = normalizeArabic(currentTargetWord);
+                const cleanResult = normalizeArabic(speechResult);
+                
+                if (cleanResult.includes(cleanTarget) || cleanTarget.includes(cleanResult)) {
                     handleCorrect();
                 } else {
                     handleIncorrect();
