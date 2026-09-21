@@ -1,401 +1,59 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اقرأ معي — المعلّم الذكي الصغير</title>
-    <!-- Tailwind CSS للتصميم -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- خط عربي (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Cairo', sans-serif; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px); }
-            40%, 80% { transform: translateX(8px); }
-        }
-        .animate-shake { animation: shake 0.4s ease-in-out; }
-    </style>
-</head>
-<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen w-full flex items-center justify-center m-0 p-4 box-border overflow-x-hidden relative">
+```javascript
+function playCurrentWordAudio() {
+    if (!('speechSynthesis' in window)) {
+        alert("خاصية الصوت غير مدعومة في متصفحك.");
+        return;
+    }
 
-    <!-- زر اختيار الكلمات في الزاوية العلوية اليمنى -->
-    <button onclick="openWordsModal()" class="absolute top-4 right-4 bg-white/95 hover:bg-white text-indigo-900 font-bold text-sm py-2.5 px-4 rounded-2xl shadow-lg border-2 border-amber-300 transition transform active:scale-95 cursor-pointer flex items-center gap-2 z-10">
-        <span>⚙️</span> اختيار الكلمات
-    </button>
+    // إيقاف أي نطق سابق
+    window.speechSynthesis.cancel();
 
-    <!-- حاوية التطبيق المتوسطة للشاشة بالكامل -->
-    <div id="main-container" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-5 md:p-8 w-full max-w-md text-center border-4 border-amber-300 transition-all duration-300 my-auto mx-auto">
-        
-        <!-- العنوان والشعار -->
-        <div class="mb-2">
-            <span class="text-3xl inline-block animate-bounce">🌟</span>
-            <h1 class="text-2xl md:text-3xl font-black text-indigo-900 mt-1">اقرأ معي</h1>
-            <p class="text-gray-500 font-bold text-xs">المعلّم الذكي الصغير (مشروع معاذ)</p>
-        </div>
+    const speak = () => {
+        const voices = window.speechSynthesis.getVoices();
 
-        <!-- عداد الإحصائيات (صحيحة، خاطئة، متخطاة) -->
-        <div class="grid grid-cols-3 gap-2 my-3 bg-gray-50 p-2 rounded-2xl border border-gray-200 text-xs font-bold">
-            <div class="text-emerald-600 bg-emerald-50 py-1.5 rounded-xl border border-emerald-100">
-                ✅ صح: <span id="correct-count">0</span>
-            </div>
-            <div class="text-rose-600 bg-rose-50 py-1.5 rounded-xl border border-rose-100">
-                ❌ خطأ: <span id="incorrect-count">0</span>
-            </div>
-            <div class="text-amber-600 bg-amber-50 py-1.5 rounded-xl border border-amber-100">
-                ⏭️ تخطي: <span id="skipped-count">0</span>
-            </div>
-        </div>
+        // البحث عن أفضل صوت عربي متاح
+        let arabicVoices = voices.filter(voice =>
+            voice.lang && voice.lang.toLowerCase().startsWith('ar')
+        );
 
-        <!-- منطقة عرض الكلمة فقط -->
-        <div id="game-card" class="bg-amber-50/80 rounded-2xl p-6 mb-3 border-2 border-dashed border-amber-300 shadow-inner transition-transform duration-300">
-            <div id="word-display" class="text-5xl md:text-6xl font-black text-gray-800 tracking-wider transition-all duration-300 my-2">جَمَلْ</div>
-            <div id="syllables-display" class="text-xl text-indigo-600 font-bold mt-3 hidden bg-indigo-50 py-1.5 rounded-xl border border-indigo-100">جَـ — مَـ — لْ</div>
-        </div>
-
-        <!-- منطقة التغذية الراجعة -->
-        <div id="feedback-area" class="h-10 flex items-center justify-center mb-3">
-            <p id="feedback-text" class="text-sm md:text-base font-bold text-gray-600">اضغط على الميكروفون وابدأ القراءة:</p>
-        </div>
-
-        <!-- أزرار التفاعل -->
-        <div class="flex flex-col gap-2.5">
-            
-            <!-- زر الميكروفون الأساسي (التحقق الصوتي) -->
-            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold py-3 px-4 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
-                <span>🎙️</span> اضغط هنا وابدأ القراءة بصوتك
-            </button>
-
-            <!-- زر الاستماع الدائم للنطق -->
-            <button onclick="playCurrentWordAudio()" class="bg-sky-500 hover:bg-sky-600 text-white text-xs md:text-sm font-bold py-2.5 px-6 rounded-full shadow-md transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 mx-auto">
-                🔊 استمع للنطق
-            </button>
-
-            <!-- زر التخطي -->
-            <button id="skip-btn" onclick="skipWord()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs font-bold py-1.5 px-5 rounded-full shadow-sm transition cursor-pointer self-center">
-                ⏭️ تخطي هذه الكلمة
-            </button>
-            
-            <!-- زر الكلمة التالية -->
-            <button id="next-btn" onclick="nextWord()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-2.5 px-5 rounded-full shadow-lg hidden cursor-pointer transform hover:scale-105 transition">
-                الكلمة التالية ➡️
-            </button>
-        </div>
-
-        <!-- عداد النجوم -->
-        <div class="mt-3 flex items-center justify-center gap-1.5 text-amber-500 text-lg font-black bg-amber-50 py-1.5 px-3 rounded-2xl border border-amber-200 shadow-sm w-fit mx-auto">
-            <span>⭐</span> النجوم: <span id="score" class="text-indigo-900">0</span>
-        </div>
-
-    </div>
-
-    <!-- نافذة اختيار الكلمات المنبثقة (Modal) -->
-    <div id="words-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col p-6 shadow-2xl border-4 border-amber-300">
-            <div class="flex justify-between items-center mb-4 border-b pb-3">
-                <h2 class="text-xl font-black text-indigo-900">📋 تخصيص واختيار الكلمات</h2>
-                <button onclick="closeWordsModal()" class="text-gray-400 hover:text-gray-700 text-2xl font-bold cursor-pointer">✕</button>
-            </div>
-            
-            <div class="flex gap-2 mb-3">
-                <button onclick="toggleAllWords(true)" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold py-2 rounded-xl border border-indigo-200 transition cursor-pointer">تحديد الكل</button>
-                <button onclick="toggleAllWords(false)" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold py-2 rounded-xl border border-rose-200 transition cursor-pointer">إلغاء تحديد الكل</button>
-            </div>
-
-            <!-- قائمة الكلمات المتاحة للتفعيل/التعطيل -->
-            <div id="words-checkbox-list" class="overflow-y-auto flex-1 grid grid-cols-2 gap-2 p-1 text-right">
-                <!-- سيتم تعبئتها برمجياً -->
-            </div>
-
-            <div class="mt-4 pt-3 border-t flex justify-end">
-                <button onclick="saveSelectedWords()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm py-2.5 px-6 rounded-2xl shadow transition cursor-pointer w-full">
-                    حفظ وتحديث اللعبة ✅
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- رقم الإصدار v1.0.27 في الزاوية السفلية اليمنى -->
-    <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
-        v1.0.27 (Exact Sukun Match) 🚀
-    </div>
-
-    <script>
-        const masterWordsPool = [
-            { word: "جَمَلْ", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", active: true },
-            { word: "قَلَمْ", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
-            { word: "تُفَّاحَةْ", syllables: "تُـ — فَـ — ا — حَـ — ةْ", vocalized: "تُفَّاحَةْ", active: true },
-            { word: "شَمْسْ", syllables: "شَـ — مْـ — سْ", vocalized: "شَمْسْ", active: true },
-            { word: "كِتَابْ", syllables: "كِـ — تَـ — ا — بْ", vocalized: "كِتَابْ", active: true },
-            { word: "أَسَدْ", syllables: "أَ — سَـ — دْ", vocalized: "أَسَدْ", active: true },
-            { word: "كُرَةْ", syllables: "كُـ — رَ — ةْ", vocalized: "كُرَةْ", active: true },
-            { word: "بَيْتْ", syllables: "بَـ — يْـ — تْ", vocalized: "بَيْتْ", active: true },
-            { word: "بَابْ", syllables: "بَـ — ا — بْ", vocalized: "بَابْ", active: true },
-            { word: "مَوْزْ", syllables: "مَـ — وْ — زْ", vocalized: "مَوْزْ", active: true },
-            { word: "بُرْتُقَالْ", syllables: "بُـ — رْ — تُـ — قَـ — ا — لْ", vocalized: "بُرْتُقَالْ", active: true },
-            { word: "حَلِيبْ", syllables: "حَـ — لِـ — ي — بْ", vocalized: "حَلِيبْ", active: true },
-            { word: "مَاءْ", syllables: "مَـ — ا — ءْ", vocalized: "مَاءْ", active: true },
-            { word: "قَمَرْ", syllables: "قَـ — مَـ — رْ", vocalized: "قَمَرْ", active: true },
-            { word: "نَجْمَةْ", syllables: "نَـ — جْـ — مَـ — ةْ", vocalized: "نَجْمَةْ", active: true },
-            { word: "زَهْرَةْ", syllables: "زَ — هْـ — رَ — ةْ", vocalized: "زَهْرَةْ", active: true },
-            { word: "شَجَرَةْ", syllables: "شَـ — جَـ — رَ — ةْ", vocalized: "شَجَرَةْ", active: true },
-            { word: "سَمَكَةْ", syllables: "سَـ — مَـ — كَـ — ةْ", vocalized: "سَمَكَةْ", active: true },
-            { word: "عُصْفُورْ", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", active: true },
-            { word: "حِصَانْ", syllables: "حِـ — صَـ — ا — نْ", vocalized: "حِصَانْ", active: true },
-            { word: "دَجَاجَةْ", syllables: "دَ — جَـ — ا — جَـ — ةْ", vocalized: "دَجَاجَةْ", active: true },
-            { word: "حَقِيبَةْ", syllables: "حَـ — قِـ — ي — بَـ — ةْ", vocalized: "حَقِيبَةْ", active: true },
-            { word: "كُرْسِيّْ", syllables: "كُـ — رْ — سِـ — يْ", vocalized: "كُرْسِيّْ", active: true },
-            { word: "قَلَمْ", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
-            { word: "مَدْرَسَةْ", syllables: "مَـ — دْ — رَ — سَـ — ةْ", vocalized: "مَدْرَسَةْ", active: true },
-            { word: "دُمْيَةْ", syllables: "دُ — مْـ — يَـ — ةْ", vocalized: "دُمْيَةْ", active: true },
-            { word: "سَيَّارَةْ", syllables: "سَـ — يَّـ — ا — رَ — ةْ", vocalized: "سَيَّارَةْ", active: true },
-            { word: "طَائِرَةْ", syllables: "طَـ — ا — ئِـ — رَ — ةْ", vocalized: "طَائِرَةْ", active: true },
-            { word: "قَارِبْ", syllables: "قَـ — ا — رِ — بْ", vocalized: "قَارِبْ", active: true },
-            { word: "عَلَمْ", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", active: true },
-            { word: "فِيلْ", syllables: "فِـ — ي — لْ", vocalized: "فِيلْ", active: true },
-            { word: "قَرْدْ", syllables: "قَـ — رْ — دْ", vocalized: "قَرْدْ", active: true },
-            { word: "زَرَافَةْ", syllables: "زَ — رَ — ا — فَـ — ةْ", vocalized: "زَرَافَةْ", active: true },
-            { word: "بَقَرَةْ", syllables: "بَـ — قَـ — رَ — ةْ", vocalized: "بَقَرَةْ", active: true },
-            { word: "خَرُوفْ", syllables: "خَـ — رُ — و — فْ", vocalized: "خَرُوفْ", active: true },
-            { word: "عِنَبْ", syllables: "عِـ — نَـ — بْ", vocalized: "عِنَبْ", active: true },
-            { word: "بِطِِّيخْ", syllables: "بِـ — طِّـ — ي — خْ", vocalized: "بِطِِّيخْ", active: true },
-            { word: "خَوْخْ", syllables: "خَـ — وْ — خْ", vocalized: "خَوْخْ", active: true },
-            { word: "تَمَرْ", syllables: "تَـ — مَـ — رْ", vocalized: "تَمَرْ", active: true },
-            { word: "خَبْزْ", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", active: true },
-            { word: "جُبْنْ", syllables: "جُـ — بْـ — نْ", vocalized: "جُبْنْ", active: true },
-            { word: "بَيْضْ", syllables: "بَـ — يْـ — ضْ", vocalized: "بَيْضْ", active: true },
-            { word: "مِفْتَاحْ", syllables: "مِـ — فْـ — تَـ — ا — حْ", vocalized: "مِفْتَاحْ", active: true },
-            { word: "قَفْلْ", syllables: "قَـ — فْـ — لْ", vocalized: "قَفْلْ", active: true },
-            { word: "سَاعَةْ", syllables: "سَـ — ا — عَـ — ةْ", vocalized: "سَاعَةْ", active: true },
-            { word: "هَاتِفْ", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", active: true },
-            { word: "تَلْوِينْ", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", active: true },
-            { word: "دَفْتَرْ", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", active: true },
-            { word: "مِسْطَرَةْ", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", active: true },
-            { word: "مِقَصْ", syllables: "مِـ — قَـ — صْ", vocalized: "مِقَصْ", active: true } // مقص بكسر الميم وفتح القاف وسكون الصاد
-        ];
-
-        let activeWordsPool = [];
-        let currentIndex = 0;
-        let score = 0;
-        let correctCount = 0;
-        let incorrectCount = 0;
-        let skippedCount = 0;
-        
-        let currentTargetWord = "";
-        let currentVocalizedText = "";
-
-        function updateStats() {
-            document.getElementById("score").innerText = score;
-            document.getElementById("correct-count").innerText = correctCount;
-            document.getElementById("incorrect-count").innerText = incorrectCount;
-            document.getElementById("skipped-count").innerText = skippedCount;
+        if (arabicVoices.length === 0) {
+            alert("لم يتم العثور على صوت عربي في جهازك.");
+            return;
         }
 
-        function refreshActivePool() {
-            activeWordsPool = masterWordsPool.filter(w => w.active).map(w => ({ ...w, weight: 1 }));
-            if (activeWordsPool.length === 0) {
-                alert("يجب اختيار كلمة واحدة على الأقل!");
-                masterWordsPool[0].active = true;
-                refreshActivePool();
-            }
-        }
+        // ترتيب الأصوات حسب الأفضلية
+        const preferredVoice =
+            arabicVoices.find(v => v.lang.toLowerCase() === 'ar-sa') ||
+            arabicVoices.find(v => v.lang.toLowerCase() === 'ar-xa') ||
+            arabicVoices.find(v => /Microsoft|Google|Natural|Neural/i.test(v.name)) ||
+            arabicVoices[0];
 
-        function loadNewWord() {
-            refreshActivePool();
-            let totalWeight = activeWordsPool.reduce((sum, item) => sum + item.weight, 0);
-            let randomNum = Math.random() * totalWeight;
-            let currentSum = 0;
+        const utterance = new SpeechSynthesisUtterance(currentVocalizedText);
 
-            for (let i = 0; i < activeWordsPool.length; i++) {
-                currentSum += activeWordsPool[i].weight;
-                if (randomNum <= currentSum) {
-                    currentIndex = i;
-                    break;
-                }
-            }
+        utterance.voice = preferredVoice;
+        utterance.lang = preferredVoice.lang || 'ar-SA';
 
-            let current = activeWordsPool[currentIndex];
-            currentTargetWord = current.word;
-            currentVocalizedText = current.vocalized;
+        // سرعة مناسبة لتعليم الأطفال
+        utterance.rate = 0.75;
 
-            const card = document.getElementById("game-card");
-            card.classList.add("scale-95", "opacity-50");
-            
-            setTimeout(() => {
-                document.getElementById("word-display").innerText = current.word;
-                document.getElementById("syllables-display").innerText = current.syllables;
-                document.getElementById("syllables-display").classList.add("hidden");
-                document.getElementById("feedback-text").innerText = "اضغط على الميكروفون وابدأ القراءة:";
-                document.getElementById("feedback-text").className = "text-sm md:text-base font-bold text-gray-600";
-                
-                card.classList.remove("scale-95", "opacity-50");
-            }, 150);
+        // نبرة طبيعية
+        utterance.pitch = 1.05;
 
-            document.getElementById("mic-btn").classList.remove("hidden");
-            document.getElementById("skip-btn").classList.remove("hidden");
-            document.getElementById("next-btn").classList.add("hidden");
-        }
+        // مستوى الصوت
+        utterance.volume = 1.0;
 
-        function openWordsModal() {
-            const listContainer = document.getElementById("words-checkbox-list");
-            listContainer.innerHTML = "";
-            
-            masterWordsPool.forEach((item, index) => {
-                listContainer.innerHTML += `
-                    <label class="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-50 border border-gray-100 cursor-pointer text-sm font-bold text-gray-700">
-                        <input type="checkbox" value="${index}" ${item.active ? 'checked' : ''} class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
-                        <span>${item.word}</span>
-                    </label>
-                `;
-            });
+        window.speechSynthesis.speak(utterance);
+    };
 
-            document.getElementById("words-modal").classList.remove("hidden");
-            document.getElementById("words-modal").classList.add("flex");
-        }
+    // بعض المتصفحات لا تُرجع الأصوات إلا بعد onvoiceschanged
+    const voices = window.speechSynthesis.getVoices();
 
-        function closeWordsModal() {
-            document.getElementById("words-modal").classList.remove("flex");
-            document.getElementById("words-modal").classList.add("hidden");
-        }
-
-        function toggleAllWords(status) {
-            masterWordsPool.forEach(w => w.active = status);
-            openWordsModal();
-        }
-
-        function saveSelectedWords() {
-            const checkboxes = document.querySelectorAll("#words-checkbox-list input[type='checkbox']");
-            checkboxes.forEach(cb => {
-                masterWordsPool[cb.value].active = cb.checked;
-            });
-            closeWordsModal();
-            loadNewWord();
-        }
-
-        function startListening() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            
-            if (!SpeechRecognition) {
-                alert("متصفحك لا يدعم التحقق الصوتي المباشر.");
-                return;
-            }
-
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'ar-SA';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            document.getElementById("feedback-text").innerText = "جاري الاستماع لصوتك... 🎧";
-            document.getElementById("mic-btn").classList.add("animate-pulse", "bg-amber-500");
-
-            recognition.onresult = function(event) {
-                let speechResult = event.results[0][0].transcript.trim();
-                
-                // تنظيف النصوص تماماً من التشكيل، التنوين، وحروف العلة الزائدة لضمان مطابقة دقيقة 100%
-                const normalizeArabic = (text) => {
-                    return text
-                        .replace(/[ًٌٍَُِّْ]/g, '') // إزالة كل الحركات والتنوين والتشديد
-                        .replace(/أ|إ|آ/g, 'ا')
-                        .replace(/ة/g, 'ه')
-                        .replace(/ى/g, 'ي')
-                        .trim();
-                };
-
-                const cleanTarget = normalizeArabic(currentTargetWord);
-                const cleanResult = normalizeArabic(speechResult);
-                
-                if (cleanResult.includes(cleanTarget) || cleanTarget.includes(cleanResult)) {
-                    handleCorrect();
-                } else {
-                    handleIncorrect();
-                }
-            };
-
-            recognition.onerror = function() {
-                document.getElementById("feedback-text").innerText = "تعذر التقاط الصوت، حاول مجدداً!";
-                document.getElementById("mic-btn").classList.remove("animate-pulse", "bg-amber-500");
-            };
-
-            recognition.onend = function() {
-                document.getElementById("mic-btn").classList.remove("animate-pulse", "bg-amber-500");
-            };
-
-            recognition.start();
-        }
-
-        function handleCorrect() {
-            score += 10;
-            correctCount++;
-            updateStats();
-
-            document.getElementById("feedback-text").innerText = "أحسنت يا بطل! إجابة صحيحة ⭐";
-            document.getElementById("feedback-text").className = "text-lg md:text-xl font-black text-emerald-600 animate-bounce";
-            
-            const card = document.getElementById("game-card");
-            card.classList.add("bg-emerald-50", "border-emerald-300");
-            setTimeout(() => card.classList.remove("bg-emerald-50", "border-emerald-300"), 600);
-
-            document.getElementById("mic-btn").classList.add("hidden");
-            document.getElementById("skip-btn").classList.add("hidden");
-            document.getElementById("next-btn").classList.remove("hidden");
-
-            let currentItem = activeWordsPool[currentIndex];
-            let originalIndex = masterWordsPool.findIndex(w => w.word === currentItem.word);
-            if (masterWordsPool[originalIndex].weight > 1) {
-                masterWordsPool[originalIndex].weight -= 1;
-            }
-        }
-
-        function handleIncorrect() {
-            incorrectCount++;
-            updateStats();
-
-            document.getElementById("feedback-text").innerText = "لا بأس يا بطل، راقب المقاطع الصوتية:";
-            document.getElementById("feedback-text").className = "text-sm md:text-base font-bold text-rose-500";
-            document.getElementById("syllables-display").classList.remove("hidden");
-            
-            const container = document.getElementById("main-container");
-            container.classList.add("animate-shake");
-            setTimeout(() => container.classList.remove("animate-shake"), 400);
-
-            let currentItem = activeWordsPool[currentIndex];
-            let originalIndex = masterWordsPool.findIndex(w => w.word === currentItem.word);
-            masterWordsPool[originalIndex].weight += 2;
-        }
-
-        function playCurrentWordAudio() {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(currentVocalizedText);
-                utterance.lang = 'ar-SA';
-                utterance.rate = 0.45;
-                utterance.pitch = 1.0;
-                window.speechSynthesis.speak(utterance);
-            } else {
-                alert("خاصية الصوت غير مدعومة في متصفحك.");
-            }
-        }
-
-        function skipWord() {
-            skippedCount++;
-            updateStats();
-
-            let currentItem = activeWordsPool[currentIndex];
-            let originalIndex = masterWordsPool.findIndex(w => w.word === currentItem.word);
-            masterWordsPool[originalIndex].weight += 1;
-            
-            loadNewWord();
-        }
-
-        function nextWord() {
-            loadNewWord();
-        }
-
-        window.onload = function() {
-            updateStats();
-            loadNewWord();
+    if (voices.length > 0) {
+        speak();
+    } else {
+        window.speechSynthesis.onvoiceschanged = () => {
+            speak();
         };
-    </script>
-</body>
-</html>
+    }
+}
+```
