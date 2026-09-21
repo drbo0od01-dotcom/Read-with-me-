@@ -73,24 +73,25 @@
 
     </div>
 
-    <!-- رقم الإصدار v1.0.9 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.10 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-3 right-4 bg-black/30 backdrop-blur-sm text-white text-xs font-mono px-3 py-1 rounded-full shadow">
-        v1.0.9 (Audio Fix) 🚀
+        v1.0.10 (Harakat) 🚀
     </div>
 
     <script>
+        // قائمة الكلمات مع التشكيل الكامل المخصص للنطق بالحركات
         let wordsPool = [
-            { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", cleanText: "جمل", weight: 1 },
-            { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", cleanText: "قلم", weight: 1 },
-            { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", cleanText: "تفاحة", weight: 1 },
-            { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", cleanText: "شمس", weight: 1 },
-            { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", cleanText: "كتاب", weight: 1 }
+            { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", vocalized: "جَمَلٌ", weight: 1 },
+            { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", vocalized: "قَلَمٌ", weight: 1 },
+            { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", vocalized: "تُفَّاحَةٌ", weight: 1 },
+            { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", vocalized: "شَمْسٌ", weight: 1 },
+            { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", vocalized: "كِتَابٌ", weight: 1 }
         ];
 
         let currentIndex = 0;
         let score = 0;
         let currentTargetWord = "";
-        let currentCleanText = "";
+        let currentVocalizedText = "";
 
         function loadNewWord() {
             let totalWeight = wordsPool.reduce((sum, item) => sum + item.weight, 0);
@@ -107,7 +108,7 @@
 
             let current = wordsPool[currentIndex];
             currentTargetWord = current.word;
-            currentCleanText = current.cleanText;
+            currentVocalizedText = current.vocalized;
 
             document.getElementById("word-emoji").innerText = current.emoji;
             document.getElementById("word-display").innerText = current.word;
@@ -183,26 +184,25 @@
             
             wordsPool[currentIndex].weight += 2;
 
-            // زر الاستماع المطور بنبرة صوت واضحة ومستقرة للأيباد
+            // زر الاستماع بالنص المشكل بالكامل
             const audioContainer = document.getElementById("audio-container");
             audioContainer.innerHTML = `
-                <button onclick="playOptimizedSpeech('${currentCleanText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
-                    🔊 استمع للكلمة بوضوح
+                <button onclick="playVocalizedSpeech('${currentVocalizedText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
+                    🔊 استمع بالتشكيل والحركات
                 </button>
             `;
         }
 
-        // دالة نطق مطورة تتخطى روبوت النظام عبر ضبط الخصائص بدقة
-        function playOptimizedSpeech(text) {
+        // دالة نطق تستخدم النص المشكل مع إبطاء السرعة لتوضيح الحركات
+        function playVocalizedSpeech(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ar-SA';
-                utterance.rate = 0.5; // سرعة هادئة ومناسبة للأطفال
-                utterance.pitch = 1.0; // طبقة صوت طبيعية متوازنة
+                utterance.rate = 0.45; // سرعة أبطأ لإعطاء فرصة للنظام لقراءة الحركات
+                utterance.pitch = 1.0;
                 
-                // تفعيل النطق الموجه
                 window.speechSynthesis.speak(utterance);
             } else {
                 alert("خاصية الصوت غير مدعومة في متصفحك.");
