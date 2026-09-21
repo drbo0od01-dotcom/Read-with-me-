@@ -18,14 +18,10 @@
         .animate-shake { animation: shake 0.4s ease-in-out; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex items-center justify-center p-3 md:p-6 relative overflow-x-hidden">
+<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen w-full flex items-center justify-center m-0 p-4 box-border overflow-x-hidden">
 
-    <!-- خلفية تفاعلية بصرية لطيفة -->
-    <div class="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-    <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-yellow-300/10 rounded-full blur-2xl pointer-events-none"></div>
-
-    <!-- حاوية التطبيق المتوسطة للشاشة بالكامل -->
-    <div id="main-container" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-5 md:p-8 w-full max-w-md mx-auto text-center border-4 border-amber-300 transition-all duration-300 my-auto">
+    <!-- حاوية التطبيق المتوسطة للشاشة بالكامل بدقة -->
+    <div id="main-container" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-5 md:p-8 w-full max-w-md text-center border-4 border-amber-300 transition-all duration-300 my-auto mx-auto">
         
         <!-- العنوان والشعار -->
         <div class="mb-3">
@@ -85,13 +81,12 @@
 
     </div>
 
-    <!-- رقم الإصدار v1.0.18 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.19 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
-        v1.0.18 (Centered) 🚀
+        v1.0.19 (Perfect Center) 🚀
     </div>
 
     <script>
-        // قائمة الكلمات الشاملة (30 كلمة مع التشكيل والوقف الساكن)
         let wordsPool = [
             { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", weight: 1 },
             { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
