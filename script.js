@@ -1,8 +1,8 @@
-// قائمة الكلمات مع إضافة حقل (audioText) لنطق الكلمة بالتشكيل الدقيق للمتصفح
+// قائمة الكلمات مع تصحيح تهجئة ونطق كلمة تفاحة (إضافة الألف: تُفَاحَة)
 let wordsPool = [
     { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", audioText: "جَـمَـل", weight: 1 },
     { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", audioText: "قَـلَـم", weight: 1 },
-    { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ - ا — حَـ — ة", audioText: "تُـفَّـاحَـة", weight: 1 },
+    { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", audioText: "تُـفَـاحَـة", weight: 1 },
     { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", audioText: "شَـمْس", weight: 1 },
     { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", audioText: "كِـتَاب", weight: 1 }
 ];
@@ -27,7 +27,7 @@ function loadNewWord() {
 
     let current = wordsPool[currentIndex];
     currentTargetWord = current.word;
-    currentAudioText = current.audioText; // جلب النص الصوتي الدقيق
+    currentAudioText = current.audioText;
 
     document.getElementById("word-emoji").innerText = current.emoji;
     document.getElementById("word-display").innerText = current.word;
@@ -103,7 +103,6 @@ function handleIncorrect() {
     
     wordsPool[currentIndex].weight += 2;
 
-    // تمرير النص الصوتي المعالج والمشكل بدقة
     const audioContainer = document.getElementById("audio-container");
     audioContainer.innerHTML = `
         <button onclick="speakWordSlowly('${currentAudioText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
@@ -116,8 +115,8 @@ function speakWordSlowly(text) {
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'ar-SA'; // ضبط اللغة على السعودية لزيادة دقة الحركات
-        utterance.rate = 0.45;    // سرعة أبطأ قليلاً لتوضيح الحركات ومخارج الحروف
+        utterance.lang = 'ar-SA';
+        utterance.rate = 0.45;
         window.speechSynthesis.speak(utterance);
     } else {
         alert("خاصية الصوت غير مدعومة في متصفحك الحالي.");
