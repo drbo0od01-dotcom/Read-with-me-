@@ -73,25 +73,24 @@
 
     </div>
 
-    <!-- رقم الإصدار v1.0.7 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.9 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-3 right-4 bg-black/30 backdrop-blur-sm text-white text-xs font-mono px-3 py-1 rounded-full shadow">
-        v1.0.7 (Stable) 🚀
+        v1.0.9 (Audio Fix) 🚀
     </div>
 
-    <!-- الكود البرمجي مدمج بالكامل هنا لضمان عدم حدوث شاشة بيضاء -->
     <script>
         let wordsPool = [
-            { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/jamal.mp3", weight: 1 },
-            { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/qalam.mp3", weight: 1 },
-            { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/tuffah.mp3", weight: 1 },
-            { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/shams.mp3", weight: 1 },
-            { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/kitab.mp3", weight: 1 }
+            { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", cleanText: "جمل", weight: 1 },
+            { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", cleanText: "قلم", weight: 1 },
+            { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", cleanText: "تفاحة", weight: 1 },
+            { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", cleanText: "شمس", weight: 1 },
+            { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", cleanText: "كتاب", weight: 1 }
         ];
 
         let currentIndex = 0;
         let score = 0;
         let currentTargetWord = "";
-        let currentAudioUrl = "";
+        let currentCleanText = "";
 
         function loadNewWord() {
             let totalWeight = wordsPool.reduce((sum, item) => sum + item.weight, 0);
@@ -108,7 +107,7 @@
 
             let current = wordsPool[currentIndex];
             currentTargetWord = current.word;
-            currentAudioUrl = current.audioUrl;
+            currentCleanText = current.cleanText;
 
             document.getElementById("word-emoji").innerText = current.emoji;
             document.getElementById("word-display").innerText = current.word;
@@ -142,7 +141,7 @@
 
             recognition.onresult = function(event) {
                 const speechResult = event.results[0][0].transcript.trim();
-                if (speechResult.includes(currentTargetWord) || currentTargetWord.includes(currentTargetWord)) {
+                if (speechResult.includes(currentTargetWord)) {
                     handleCorrect();
                 } else {
                     handleIncorrect();
@@ -184,19 +183,30 @@
             
             wordsPool[currentIndex].weight += 2;
 
+            // زر الاستماع المطور بنبرة صوت واضحة ومستقرة للأيباد
             const audioContainer = document.getElementById("audio-container");
             audioContainer.innerHTML = `
-                <button onclick="playRealMp3('${currentAudioUrl}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
-                    🔊 استمع للصوت البشري النقي
+                <button onclick="playOptimizedSpeech('${currentCleanText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
+                    🔊 استمع للكلمة بوضوح
                 </button>
             `;
         }
 
-        function playRealMp3(url) {
-            const audio = new Audio(url);
-            audio.play().catch(error => {
-                console.log("خطأ في تشغيل الملف الصوتي:", error);
-            });
+        // دالة نطق مطورة تتخطى روبوت النظام عبر ضبط الخصائص بدقة
+        function playOptimizedSpeech(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ar-SA';
+                utterance.rate = 0.5; // سرعة هادئة ومناسبة للأطفال
+                utterance.pitch = 1.0; // طبقة صوت طبيعية متوازنة
+                
+                // تفعيل النطق الموجه
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("خاصية الصوت غير مدعومة في متصفحك.");
+            }
         }
 
         function skipWord() {
