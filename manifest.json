@@ -1,0 +1,15 @@
+{
+  "name": "اقرأ معي — المعلّم الذكي الصغير",
+  "short_name": "اقرأ معي",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#38bdf8",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "https://images.emojiterra.com/google/android-11/512px/1f42a.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
