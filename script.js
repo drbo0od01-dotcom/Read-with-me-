@@ -1,15 +1,16 @@
-// قائمة الكلمات مع التهجئة والرموز التعبيرية والنظام التكيفي
+// قائمة الكلمات مع إضافة حقل (audioText) لنطق الكلمة بالتشكيل الدقيق للمتصفح
 let wordsPool = [
-    { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", weight: 1 },
-    { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", weight: 1 },
-    { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — حَـ — ة", weight: 1 },
-    { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", weight: 1 },
-    { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", weight: 1 }
+    { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", audioText: "جَـمَـل", weight: 1 },
+    { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", audioText: "قَـلَـم", weight: 1 },
+    { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ - ا — حَـ — ة", audioText: "تُـفَّـاحَـة", weight: 1 },
+    { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", audioText: "شَـمْس", weight: 1 },
+    { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", audioText: "كِـتَاب", weight: 1 }
 ];
 
 let currentIndex = 0;
 let score = 0;
 let currentTargetWord = "";
+let currentAudioText = "";
 
 function loadNewWord() {
     let totalWeight = wordsPool.reduce((sum, item) => sum + item.weight, 0);
@@ -26,6 +27,7 @@ function loadNewWord() {
 
     let current = wordsPool[currentIndex];
     currentTargetWord = current.word;
+    currentAudioText = current.audioText; // جلب النص الصوتي الدقيق
 
     document.getElementById("word-emoji").innerText = current.emoji;
     document.getElementById("word-display").innerText = current.word;
@@ -38,7 +40,6 @@ function loadNewWord() {
     document.getElementById("skip-btn").classList.remove("hidden");
     document.getElementById("next-btn").classList.add("hidden");
     
-    // مسح زر الاستماع الصوتي عند تحميل كلمة جديدة
     document.getElementById("audio-container").innerHTML = "";
 }
 
@@ -60,7 +61,7 @@ function startListening() {
 
     recognition.onresult = function(event) {
         const speechResult = event.results[0][0].transcript.trim();
-        if (speechResult.includes(currentTargetWord) || currentTargetWord.includes(speechResult)) {
+        if (speechResult.includes(currentTargetWord) || currentTargetWord.includes(currentTargetWord)) {
             handleCorrect();
         } else {
             handleIncorrect();
@@ -102,10 +103,10 @@ function handleIncorrect() {
     
     wordsPool[currentIndex].weight += 2;
 
-    // إظهار زر الاستماع الصوتي بوضوح في المكان المخصص
+    // تمرير النص الصوتي المعالج والمشكل بدقة
     const audioContainer = document.getElementById("audio-container");
     audioContainer.innerHTML = `
-        <button onclick="speakWordSlowly('${currentTargetWord}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
+        <button onclick="speakWordSlowly('${currentAudioText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
             🔊 اضغط هنا للاستماع للكلمة ببطء
         </button>
     `;
@@ -115,8 +116,8 @@ function speakWordSlowly(text) {
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'ar';
-        utterance.rate = 0.5;
+        utterance.lang = 'ar-SA'; // ضبط اللغة على السعودية لزيادة دقة الحركات
+        utterance.rate = 0.45;    // سرعة أبطأ قليلاً لتوضيح الحركات ومخارج الحروف
         window.speechSynthesis.speak(utterance);
     } else {
         alert("خاصية الصوت غير مدعومة في متصفحك الحالي.");
