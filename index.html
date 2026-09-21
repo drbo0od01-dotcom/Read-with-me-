@@ -50,7 +50,7 @@
 
         <!-- منطقة عرض الكلمة فقط -->
         <div id="game-card" class="bg-amber-50/80 rounded-2xl p-6 mb-3 border-2 border-dashed border-amber-300 shadow-inner transition-transform duration-300">
-            <div id="word-display" class="text-5xl md:text-6xl font-black text-gray-800 tracking-wider transition-all duration-300 my-2">جَمَل</div>
+            <div id="word-display" class="text-5xl md:text-6xl font-black text-gray-800 tracking-wider transition-all duration-300 my-2">جَمَلْ</div>
             <div id="syllables-display" class="text-xl text-indigo-600 font-bold mt-3 hidden bg-indigo-50 py-1.5 rounded-xl border border-indigo-100">جَـ — مَـ — لْ</div>
         </div>
 
@@ -116,64 +116,64 @@
         </div>
     </div>
 
-    <!-- رقم الإصدار v1.0.25 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.26 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
-        v1.0.25 (Maqass Corrected) 🚀
+        v1.0.26 (Strict Sukun) 🚀
     </div>
 
     <script>
-        // قائمة الكلمات الكاملة الـ 50 مع تصحيح مقص
+        // قائمة الكلمات الكاملة الـ 50 (جميعها تنتهي بحرف ساكن للوقف الفصيح)
         const masterWordsPool = [
-            { word: "جَمَل", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", active: true },
-            { word: "قلم", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
-            { word: "تفاحة", syllables: "تُـ — فَـ — ا — حَـ — ةْ", vocalized: "تُفَّاحَةْ", active: true },
-            { word: "شمس", syllables: "شَـ — مْـ — سْ", vocalized: "شَمْسْ", active: true },
-            { word: "كتاب", syllables: "كِـ — تَـ — ا — بْ", vocalized: "كِتَابْ", active: true },
-            { word: "أسد", syllables: "أَ — سَـ — دْ", vocalized: "أَسَدْ", active: true },
-            { word: "كرة", syllables: "كُـ — رَ — ةْ", vocalized: "كُرَةْ", active: true },
-            { word: "بيت", syllables: "بَـ — يْـ — تْ", vocalized: "بَيْتْ", active: true },
-            { word: "باب", syllables: "بَـ — ا — بْ", vocalized: "بَابْ", active: true },
-            { word: "موز", syllables: "مَـ — وْ — زْ", vocalized: "مَوْزْ", active: true },
-            { word: "برتقال", syllables: "بُـ — رْ — تُـ — قَـ — ا — لْ", vocalized: "بُرْتُقَالْ", active: true },
-            { word: "حليب", syllables: "حَـ — لِـ — ي — بْ", vocalized: "حَلِيبْ", active: true },
-            { word: "ماء", syllables: "مَـ — ا — ءْ", vocalized: "مَاءْ", active: true },
-            { word: "قمر", syllables: "قَـ — مَـ — رْ", vocalized: "قَمَرْ", active: true },
-            { word: "نجمة", syllables: "نَـ — جْـ — مَـ — ةْ", vocalized: "نَجْمَةْ", active: true },
-            { word: "زهرة", syllables: "زَ — هْـ — رَ — ةْ", vocalized: "زَهْرَةْ", active: true },
-            { word: "شجرة", syllables: "شَـ — جَـ — رَ — ةْ", vocalized: "شَجَرَةْ", active: true },
-            { word: "سمكة", syllables: "سَـ — مَـ — كَـ — ةْ", vocalized: "سَمَكَةْ", active: true },
-            { word: "عصفور", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", active: true },
-            { word: "حصان", syllables: "حِـ — صَـ — ا — نْ", vocalized: "حِصَانْ", active: true },
-            { word: "دجاجة", syllables: "دَ — جَـ — ا — جَـ — ةْ", vocalized: "دَجَاجَةْ", active: true },
-            { word: "حقيبة", syllables: "حَـ — قِـ — ي — بَـ — ةْ", vocalized: "حَقِيبَةْ", active: true },
-            { word: "كرسي", syllables: "كُـ — رْ — سِـ — يْ", vocalized: "كُرْسِيّْ", active: true },
-            { word: "قلم", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
-            { word: "مدرسة", syllables: "مَـ — دْ — رَ — سَـ — ةْ", vocalized: "مَدْرَسَةْ", active: true },
-            { word: "دمية", syllables: "دُ — مْـ — يَـ — ةْ", vocalized: "دُمْيَةْ", active: true },
-            { word: "سيارة", syllables: "سَـ — يَّـ — ا — رَ — ةْ", vocalized: "سَيَّارَةْ", active: true },
-            { word: "طائرة", syllables: "طَـ — ا — ئِـ — رَ — ةْ", vocalized: "طَائِرَةْ", active: true },
-            { word: "قارب", syllables: "قَـ — ا — رِ — بْ", vocalized: "قَارِبْ", active: true },
-            { word: "علم", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", active: true },
-            { word: "فيل", syllables: "فِـ — ي — لْ", vocalized: "فِيلْ", active: true },
-            { word: "قرد", syllables: "قَـ — رْ — دْ", vocalized: "قَرْدْ", active: true },
-            { word: "زرافة", syllables: "زَ — رَ — ا — فَـ — ةْ", vocalized: "زَرَافَةْ", active: true },
-            { word: "بقرة", syllables: "بَـ — قَـ — رَ — ةْ", vocalized: "بَقَرَةْ", active: true },
-            { word: "خروف", syllables: "خَـ — رُ — و — فْ", vocalized: "خَرُوفْ", active: true },
-            { word: "عنب", syllables: "عِـ — نَـ — بْ", vocalized: "عِنَبْ", active: true },
-            { word: "بطيخ", syllables: "بِـ — طِّـ — ي — خْ", vocalized: "بِطِِّيخْ", active: true },
-            { word: "خوخ", syllables: "خَـ — وْ — خْ", vocalized: "خَوْخْ", active: true },
-            { word: "تمر", syllables: "تَـ — مَـ — رْ", vocalized: "تَمَرْ", active: true },
-            { word: "خبز", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", active: true },
-            { word: "جبن", syllables: "جُـ — بْـ — نْ", vocalized: "جُبْنْ", active: true },
-            { word: "بيض", syllables: "بَـ — يْـ — ضْ", vocalized: "بَيْضْ", active: true },
-            { word: "مفتاح", syllables: "مِـ — فْـ — تَـ — ا — حْ", vocalized: "مِفْتَاحْ", active: true },
-            { word: "قفل", syllables: "قَـ — فْـ — لْ", vocalized: "قَفْلْ", active: true },
-            { word: "ساعة", syllables: "سَـ — ا — عَـ — ةْ", vocalized: "سَاعَةْ", active: true },
-            { word: "هاتف", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", active: true },
-            { word: "تلوين", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", active: true },
-            { word: "دفتر", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", active: true },
-            { word: "مسطرة", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", active: true },
-            { word: "مقص", syllables: "مِـ — قَـ — صْـ — صْ", vocalized: "مِقَصّْ", active: true } // تم تصحيح التشديد والكسر (مِقَصّْ)
+            { word: "جَمَلْ", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", active: true },
+            { word: "قَلَمْ", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
+            { word: "تُفَّاحَةْ", syllables: "تُـ — فَـ — ا — حَـ — ةْ", vocalized: "تُفَّاحَةْ", active: true },
+            { word: "شَمْسْ", syllables: "شَـ — مْـ — سْ", vocalized: "شَمْسْ", active: true },
+            { word: "كِتَابْ", syllables: "كِـ — تَـ — ا — بْ", vocalized: "كِتَابْ", active: true },
+            { word: "أَسَدْ", syllables: "أَ — سَـ — دْ", vocalized: "أَسَدْ", active: true },
+            { word: "كُرَةْ", syllables: "كُـ — رَ — ةْ", vocalized: "كُرَةْ", active: true },
+            { word: "بَيْتْ", syllables: "بَـ — يْـ — تْ", vocalized: "بَيْتْ", active: true },
+            { word: "بَابْ", syllables: "بَـ — ا — بْ", vocalized: "بَابْ", active: true },
+            { word: "مَوْزْ", syllables: "مَـ — وْ — زْ", vocalized: "مَوْزْ", active: true },
+            { word: "بُرْتُقَالْ", syllables: "بُـ — رْ — تُـ — قَـ — ا — لْ", vocalized: "بُرْتُقَالْ", active: true },
+            { word: "حَلِيبْ", syllables: "حَـ — لِـ — ي — بْ", vocalized: "حَلِيبْ", active: true },
+            { word: "مَاءْ", syllables: "مَـ — ا — ءْ", vocalized: "مَاءْ", active: true },
+            { word: "قَمَرْ", syllables: "قَـ — مَـ — رْ", vocalized: "قَمَرْ", active: true },
+            { word: "نَجْمَةْ", syllables: "نَـ — جْـ — مَـ — ةْ", vocalized: "نَجْمَةْ", active: true },
+            { word: "زَهْرَةْ", syllables: "زَ — هْـ — رَ — ةْ", vocalized: "زَهْرَةْ", active: true },
+            { word: "شَجَرَةْ", syllables: "شَـ — جَـ — رَ — ةْ", vocalized: "شَجَرَةْ", active: true },
+            { word: "سَمَكَةْ", syllables: "سَـ — مَـ — كَـ — ةْ", vocalized: "سَمَكَةْ", active: true },
+            { word: "عُصْفُورْ", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", active: true },
+            { word: "حِصَانْ", syllables: "حِـ — صَـ — ا — نْ", vocalized: "حِصَانْ", active: true },
+            { word: "دَجَاجَةْ", syllables: "دَ — جَـ — ا — جَـ — ةْ", vocalized: "دَجَاجَةْ", active: true },
+            { word: "حَقِيبَةْ", syllables: "حَـ — قِـ — ي — بَـ — ةْ", vocalized: "حَقِيبَةْ", active: true },
+            { word: "كُرْسِيّْ", syllables: "كُـ — رْ — سِـ — يْ", vocalized: "كُرْسِيّْ", active: true },
+            { word: "قَلَمْ", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
+            { word: "مَدْرَسَةْ", syllables: "مَـ — دْ — رَ — سَـ — ةْ", vocalized: "مَدْرَسَةْ", active: true },
+            { word: "دُمْيَةْ", syllables: "دُ — مْـ — يَـ — ةْ", vocalized: "دُمْيَةْ", active: true },
+            { word: "سَيَّارَةْ", syllables: "سَـ — يَّـ — ا — رَ — ةْ", vocalized: "سَيَّارَةْ", active: true },
+            { word: "طَائِرَةْ", syllables: "طَـ — ا — ئِـ — رَ — ةْ", vocalized: "طَائِرَةْ", active: true },
+            { word: "قَارِبْ", syllables: "قَـ — ا — رِ — بْ", vocalized: "قَارِبْ", active: true },
+            { word: "عَلَمْ", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", active: true },
+            { word: "فِيلْ", syllables: "فِـ — ي — لْ", vocalized: "فِيلْ", active: true },
+            { word: "قَرْدْ", syllables: "قَـ — رْ — دْ", vocalized: "قَرْدْ", active: true },
+            { word: "زَرَافَةْ", syllables: "زَ — رَ — ا — فَـ — ةْ", vocalized: "زَرَافَةْ", active: true },
+            { word: "بَقَرَةْ", syllables: "بَـ — قَـ — رَ — ةْ", vocalized: "بَقَرَةْ", active: true },
+            { word: "خَرُوفْ", syllables: "خَـ — رُ — و — فْ", vocalized: "خَرُوفْ", active: true },
+            { word: "عِنَبْ", syllables: "عِـ — نَـ — بْ", vocalized: "عِنَبْ", active: true },
+            { word: "بِطِِّيخْ", syllables: "بِـ — طِّـ — ي — خْ", vocalized: "بِطِِّيخْ", active: true },
+            { word: "خَوْخْ", syllables: "خَـ — وْ — خْ", vocalized: "خَوْخْ", active: true },
+            { word: "تَمَرْ", syllables: "تَـ — مَـ — رْ", vocalized: "تَمَرْ", active: true },
+            { word: "خَبْزْ", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", active: true },
+            { word: "جُبْنْ", syllables: "جُـ — بْـ — نْ", vocalized: "جُبْنْ", active: true },
+            { word: "بَيْضْ", syllables: "بَـ — يْـ — ضْ", vocalized: "بَيْضْ", active: true },
+            { word: "مِفْتَاحْ", syllables: "مِـ — فْـ — تَـ — ا — حْ", vocalized: "مِفْتَاحْ", active: true },
+            { word: "قَفْلْ", syllables: "قَـ — فْـ — لْ", vocalized: "قَفْلْ", active: true },
+            { word: "سَاعَةْ", syllables: "سَـ — ا — عَـ — ةْ", vocalized: "سَاعَةْ", active: true },
+            { word: "هَاتِفْ", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", active: true },
+            { word: "تَلْوِينْ", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", active: true },
+            { word: "دَفْتَرْ", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", active: true },
+            { word: "مِسْطَرَةْ", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", active: true },
+            { word: "مِقَصّْ", syllables: "مِـ — قَـ — صْـ — صْ", vocalized: "مِقَصّْ", active: true } // مقص بكسر الميم وفتح القاف وتشديد الصاد مع السكون
         ];
 
         let activeWordsPool = [];
@@ -246,7 +246,7 @@
                 listContainer.innerHTML += `
                     <label class="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-50 border border-gray-100 cursor-pointer text-sm font-bold text-gray-700">
                         <input type="checkbox" value="${index}" ${item.active ? 'checked' : ''} class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
-                        <span>${item.word} (${item.vocalized})</span>
+                        <span>${item.word}</span>
                     </label>
                 `;
             });
@@ -292,7 +292,11 @@
 
             recognition.onresult = function(event) {
                 const speechResult = event.results[0][0].transcript.trim();
-                if (speechResult.includes(currentTargetWord)) {
+                // مقارنة النص بدون علامات السكون ليقبل النظام نطق الطفل
+                const cleanTarget = currentTargetWord.replace(/[ًٌٍَُِّْ]/g, '');
+                const cleanResult = speechResult.replace(/[ًٌٍَُِّْ]/g, '');
+                
+                if (speechResult.includes(currentTargetWord) || cleanResult.includes(cleanTarget)) {
                     handleCorrect();
                 } else {
                     handleIncorrect();
