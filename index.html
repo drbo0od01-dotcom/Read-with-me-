@@ -18,7 +18,12 @@
         .animate-shake { animation: shake 0.4s ease-in-out; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen w-full flex items-center justify-center m-0 p-4 box-border overflow-x-hidden">
+<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen w-full flex items-center justify-center m-0 p-4 box-border overflow-x-hidden relative">
+
+    <!-- زر اختيار الكلمات في الزاوية العلوية اليمنى -->
+    <button onclick="openWordsModal()" class="absolute top-4 right-4 bg-white/95 hover:bg-white text-indigo-900 font-bold text-sm py-2.5 px-4 rounded-2xl shadow-lg border-2 border-amber-300 transition transform active:scale-95 cursor-pointer flex items-center gap-2 z-10">
+        <span>⚙️</span> اختيار الكلمات
+    </button>
 
     <!-- حاوية التطبيق المتوسطة للشاشة بالكامل -->
     <div id="main-container" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-5 md:p-8 w-full max-w-md text-center border-4 border-amber-300 transition-all duration-300 my-auto mx-auto">
@@ -62,7 +67,7 @@
                 <span>🎙️</span> اضغط هنا وابدأ القراءة بصوتك
             </button>
 
-            <!-- زر الاستماع الدائم للنطق (متاح دائماً) -->
+            <!-- زر الاستماع الدائم للنطق -->
             <button onclick="playCurrentWordAudio()" class="bg-sky-500 hover:bg-sky-600 text-white text-xs md:text-sm font-bold py-2.5 px-6 rounded-full shadow-md transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 mx-auto">
                 🔊 استمع للنطق
             </button>
@@ -85,65 +90,93 @@
 
     </div>
 
-    <!-- رقم الإصدار v1.0.23 في الزاوية السفلية اليمنى -->
+    <!-- نافذة اختيار الكلمات المنبثقة (Modal) -->
+    <div id="words-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col p-6 shadow-2xl border-4 border-amber-300">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h2 class="text-xl font-black text-indigo-900">📋 تخصيص واختيار الكلمات</h2>
+                <button onclick="closeWordsModal()" class="text-gray-400 hover:text-gray-700 text-2xl font-bold cursor-pointer">✕</button>
+            </div>
+            
+            <div class="flex gap-2 mb-3">
+                <button onclick="toggleAllWords(true)" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold py-2 rounded-xl border border-indigo-200 transition cursor-pointer">تحديد الكل</button>
+                <button onclick="toggleAllWords(false)" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold py-2 rounded-xl border border-rose-200 transition cursor-pointer">إلغاء تحديد الكل</button>
+            </div>
+
+            <!-- قائمة الكلمات المتاحة للتفعيل/التعطيل -->
+            <div id="words-checkbox-list" class="overflow-y-auto flex-1 grid grid-cols-2 gap-2 p-1 text-right">
+                <!-- سيتم تعبئتها برمجياً -->
+            </div>
+
+            <div class="mt-4 pt-3 border-t flex justify-end">
+                <button onclick="saveSelectedWords()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm py-2.5 px-6 rounded-2xl shadow transition cursor-pointer w-full">
+                    حفظ وتحديث اللعبة ✅
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- رقم الإصدار v1.0.24 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
-        v1.0.23 (Always Audio + Maqas Fix) 🚀
+        v1.0.24 (Word Picker) 🚀
     </div>
 
     <script>
-        let wordsPool = [
-            { word: "جَمَل", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", weight: 1 },
-            { word: "قلم", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
-            { word: "تفاحة", syllables: "تُـ — فَـ — ا — حَـ — ةْ", vocalized: "تُفَّاحَةْ", weight: 1 },
-            { word: "شمس", syllables: "شَـ — مْـ — سْ", vocalized: "شَمْسْ", weight: 1 },
-            { word: "كتاب", syllables: "كِـ — تَـ — ا — بْ", vocalized: "كِتَابْ", weight: 1 },
-            { word: "أسد", syllables: "أَ — سَـ — دْ", vocalized: "أَسَدْ", weight: 1 },
-            { word: "كرة", syllables: "كُـ — رَ — ةْ", vocalized: "كُرَةْ", weight: 1 },
-            { word: "بيت", syllables: "بَـ — يْـ — تْ", vocalized: "بَيْتْ", weight: 1 },
-            { word: "باب", syllables: "بَـ — ا — بْ", vocalized: "بَابْ", weight: 1 },
-            { word: "موز", syllables: "مَـ — وْ — زْ", vocalized: "مَوْزْ", weight: 1 },
-            { word: "برتقال", syllables: "بُـ — رْ — تُـ — قَـ — ا — لْ", vocalized: "بُرْتُقَالْ", weight: 1 },
-            { word: "حليب", syllables: "حَـ — لِـ — ي — بْ", vocalized: "حَلِيبْ", weight: 1 },
-            { word: "ماء", syllables: "مَـ — ا — ءْ", vocalized: "مَاءْ", weight: 1 },
-            { word: "قمر", syllables: "قَـ — مَـ — رْ", vocalized: "قَمَرْ", weight: 1 },
-            { word: "نجمة", syllables: "نَـ — جْـ — مَـ — ةْ", vocalized: "نَجْمَةْ", weight: 1 },
-            { word: "زهرة", syllables: "زَ — هْـ — رَ — ةْ", vocalized: "زَهْرَةْ", weight: 1 },
-            { word: "شجرة", syllables: "شَـ — جَـ — رَ — ةْ", vocalized: "شَجَرَةْ", weight: 1 },
-            { word: "سمكة", syllables: "سَـ — مَـ — كَـ — ةْ", vocalized: "سَمَكَةْ", weight: 1 },
-            { word: "عصفور", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", weight: 1 },
-            { word: "حصان", syllables: "حِـ — صَـ — ا — نْ", vocalized: "حِصَانْ", weight: 1 },
-            { word: "دجاجة", syllables: "دَ — جَـ — ا — جَـ — ةْ", vocalized: "دَجَاجَةْ", weight: 1 },
-            { word: "حقيبة", syllables: "حَـ — قِـ — ي — بَـ — ةْ", vocalized: "حَقِيبَةْ", weight: 1 },
-            { word: "كرسي", syllables: "كُـ — رْ — سِـ — يْ", vocalized: "كُرْسِيّْ", weight: 1 },
-            { word: "قلم", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
-            { word: "مدرسة", syllables: "مَـ — دْ — رَ — سَـ — ةْ", vocalized: "مَدْرَسَةْ", weight: 1 },
-            { word: "دمية", syllables: "دُ — مْـ — يَـ — ةْ", vocalized: "دُمْيَةْ", weight: 1 },
-            { word: "سيارة", syllables: "سَـ — يَّـ — ا — رَ — ةْ", vocalized: "سَيَّارَةْ", weight: 1 },
-            { word: "طائرة", syllables: "طَـ — ا — ئِـ — رَ — ةْ", vocalized: "طَائِرَةْ", weight: 1 },
-            { word: "قارب", syllables: "قَـ — ا — رِ — بْ", vocalized: "قَارِبْ", weight: 1 },
-            { word: "علم", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", weight: 1 },
-            { word: "فيل", syllables: "فِـ — ي — لْ", vocalized: "فِيلْ", weight: 1 },
-            { word: "قرد", syllables: "قَـ — رْ — دْ", vocalized: "قَرْدْ", weight: 1 },
-            { word: "زرافة", syllables: "زَ — رَ — ا — فَـ — ةْ", vocalized: "زَرَافَةْ", weight: 1 },
-            { word: "بقرة", syllables: "بَـ — قَـ — رَ — ةْ", vocalized: "بَقَرَةْ", weight: 1 },
-            { word: "خروف", syllables: "خَـ — رُ — و — فْ", vocalized: "خَرُوفْ", weight: 1 },
-            { word: "عنب", syllables: "عِـ — نَـ — بْ", vocalized: "عِنَبْ", weight: 1 },
-            { word: "بطيخ", syllables: "بِـ — طِّـ — ي — خْ", vocalized: "بِطِِّيخْ", weight: 1 },
-            { word: "خوخ", syllables: "خَـ — وْ — خْ", vocalized: "خَوْخْ", weight: 1 },
-            { word: "تمر", syllables: "تَـ — مَـ — رْ", vocalized: "تَمَرْ", weight: 1 },
-            { word: "خبز", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", weight: 1 },
-            { word: "جبن", syllables: "جُـ — بْـ — نْ", vocalized: "جُبْنْ", weight: 1 },
-            { word: "بيض", syllables: "بَـ — يْـ — ضْ", vocalized: "بَيْضْ", weight: 1 },
-            { word: "مفتاح", syllables: "مِـ — فْـ — تَـ — ا — حْ", vocalized: "مِفْتَاحْ", weight: 1 },
-            { word: "قفل", syllables: "قَـ — فْـ — لْ", vocalized: "قَفْلْ", weight: 1 },
-            { word: "ساعة", syllables: "سَـ — ا — عَـ — ةْ", vocalized: "سَاعَةْ", weight: 1 },
-            { word: "هاتف", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", weight: 1 },
-            { word: "تلوين", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", weight: 1 },
-            { word: "دفتر", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", weight: 1 },
-            { word: "مسطرة", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", weight: 1 },
-            { word: "مقص", syllables: "مَـ — قْـ — صْ", vocalized: "مَقْصْ", weight: 1 } // تم تعديل تشكيل مقص لتصبح بفتح القاف (مَقْصْ)
+        // قائمة الكلمات الكاملة الـ 50 الأساسية
+        const masterWordsPool = [
+            { word: "جَمَل", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", active: true },
+            { word: "قلم", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
+            { word: "تفاحة", syllables: "تُـ — فَـ — ا — حَـ — ةْ", vocalized: "تُفَّاحَةْ", active: true },
+            { word: "شمس", syllables: "شَـ — مْـ — سْ", vocalized: "شَمْسْ", active: true },
+            { word: "كتاب", syllables: "كِـ — تَـ — ا — بْ", vocalized: "كِتَابْ", active: true },
+            { word: "أسد", syllables: "أَ — سَـ — دْ", vocalized: "أَسَدْ", active: true },
+            { word: "كرة", syllables: "كُـ — رَ — ةْ", vocalized: "كُرَةْ", active: true },
+            { word: "بيت", syllables: "بَـ — يْـ — تْ", vocalized: "بَيْتْ", active: true },
+            { word: "باب", syllables: "بَـ — ا — بْ", vocalized: "بَابْ", active: true },
+            { word: "موز", syllables: "مَـ — وْ — زْ", vocalized: "مَوْزْ", active: true },
+            { word: "برتقال", syllables: "بُـ — رْ — تُـ — قَـ — ا — لْ", vocalized: "بُرْتُقَالْ", active: true },
+            { word: "حليب", syllables: "حَـ — لِـ — ي — بْ", vocalized: "حَلِيبْ", active: true },
+            { word: "ماء", syllables: "مَـ — ا — ءْ", vocalized: "مَاءْ", active: true },
+            { word: "قمر", syllables: "قَـ — مَـ — رْ", vocalized: "قَمَرْ", active: true },
+            { word: "نجمة", syllables: "نَـ — جْـ — مَـ — ةْ", vocalized: "نَجْمَةْ", active: true },
+            { word: "زهرة", syllables: "زَ — هْـ — رَ — ةْ", vocalized: "زَهْرَةْ", active: true },
+            { word: "شجرة", syllables: "شَـ — جَـ — رَ — ةْ", vocalized: "شَجَرَةْ", active: true },
+            { word: "سمكة", syllables: "سَـ — مَـ — كَـ — ةْ", vocalized: "سَمَكَةْ", active: true },
+            { word: "عصفور", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", weight: 1, active: true },
+            { word: "حصان", syllables: "حِـ — صَـ — ا — نْ", vocalized: "حِصَانْ", active: true },
+            { word: "دجاجة", syllables: "دَ — جَـ — ا — جَـ — ةْ", vocalized: "دَجَاجَةْ", active: true },
+            { word: "حقيبة", syllables: "حَـ — قِـ — ي — بَـ — ةْ", vocalized: "حَقِيبَةْ", active: true },
+            { word: "كرسي", syllables: "كُـ — رْ — سِـ — يْ", vocalized: "كُرْسِيّْ", active: true },
+            { word: "قلم", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
+            { word: "مدرسة", syllables: "مَـ — دْ — رَ — سَـ — ةْ", vocalized: "مَدْرَسَةْ", active: true },
+            { word: "دمية", syllables: "دُ — مْـ — يَـ — ةْ", vocalized: "دُمْيَةْ", active: true },
+            { word: "سيارة", syllables: "سَـ — يَّـ — ا — رَ — ةْ", vocalized: "سَيَّارَةْ", active: true },
+            { word: "طائرة", syllables: "طَـ — ا — ئِـ — رَ — ةْ", vocalized: "طَائِرَةْ", active: true },
+            { word: "قارب", syllables: "قَـ — ا — رِ — بْ", vocalized: "قَارِبْ", active: true },
+            { word: "علم", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", active: true },
+            { word: "فيل", syllables: "فِـ — ي — لْ", vocalized: "فِيلْ", active: true },
+            { word: "قرد", syllables: "قَـ — رْ — دْ", vocalized: "قَرْدْ", active: true },
+            { word: "زرافة", syllables: "زَ — رَ — ا — فَـ — ةْ", vocalized: "زَرَافَةْ", active: true },
+            { word: "بقرة", syllables: "بَـ — قَـ — رَ — ةْ", vocalized: "بَقَرَةْ", active: true },
+            { word: "خروف", syllables: "خَـ — رُ — و — فْ", vocalized: "خَرُوفْ", active: true },
+            { word: "عنب", syllables: "عِـ — نَـ — بْ", vocalized: "عِنَبْ", active: true },
+            { word: "بطيخ", syllables: "بِـ — طِّـ — ي — خْ", vocalized: "بِطِِّيخْ", active: true },
+            { word: "خوخ", syllables: "خَـ — وْ — خْ", vocalized: "خَوْخْ", active: true },
+            { word: "تمر", syllables: "تَـ — مَـ — رْ", vocalized: "تَمَرْ", active: true },
+            { word: "خبز", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", weight: 1, active: true },
+            { word: "جبن", syllables: "جُـ — بْـ — نْ", vocalized: "جُبْنْ", active: true },
+            { word: "بيض", syllables: "بَـ — يْـ — ضْ", vocalized: "بَيْضْ", active: true },
+            { word: "مفتاح", syllables: "مِـ — فْـ — تَـ — ا — حْ", vocalized: "مِفْتَاحْ", active: true },
+            { word: "قفل", syllables: "قَـ — فْـ — لْ", vocalized: "قَفْلْ", active: true },
+            { word: "ساعة", syllables: "سَـ — ا — عَـ — ةْ", vocalized: "سَاعَةْ", active: true },
+            { word: "هاتف", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", weight: 1, active: true },
+            { word: "تلوين", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", active: true },
+            { word: "دفتر", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", active: true },
+            { word: "مسطرة", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", active: true },
+            { word: "مقص", syllables: "مَـ — قْـ — صْ", vocalized: "مَقْصْ", active: true }
         ];
 
+        let activeWordsPool = [];
         let currentIndex = 0;
         let score = 0;
         let correctCount = 0;
@@ -160,20 +193,30 @@
             document.getElementById("skipped-count").innerText = skippedCount;
         }
 
+        function refreshActivePool() {
+            activeWordsPool = masterWordsPool.filter(w => w.active).map(w => ({ ...w, weight: 1 }));
+            if (activeWordsPool.length === 0) {
+                alert("يجب اختيار كلمة واحدة على الأقل!");
+                masterWordsPool[0].active = true;
+                refreshActivePool();
+            }
+        }
+
         function loadNewWord() {
-            let totalWeight = wordsPool.reduce((sum, item) => sum + item.weight, 0);
+            refreshActivePool();
+            let totalWeight = activeWordsPool.reduce((sum, item) => sum + item.weight, 0);
             let randomNum = Math.random() * totalWeight;
             let currentSum = 0;
 
-            for (let i = 0; i < wordsPool.length; i++) {
-                currentSum += wordsPool[i].weight;
+            for (let i = 0; i < activeWordsPool.length; i++) {
+                currentSum += activeWordsPool[i].weight;
                 if (randomNum <= currentSum) {
                     currentIndex = i;
                     break;
                 }
             }
 
-            let current = wordsPool[currentIndex];
+            let current = activeWordsPool[currentIndex];
             currentTargetWord = current.word;
             currentVocalizedText = current.vocalized;
 
@@ -193,6 +236,43 @@
             document.getElementById("mic-btn").classList.remove("hidden");
             document.getElementById("skip-btn").classList.remove("hidden");
             document.getElementById("next-btn").classList.add("hidden");
+        }
+
+        // إبداء نافذة اختيار الكلمات
+        function openWordsModal() {
+            const listContainer = document.getElementById("words-checkbox-list");
+            listContainer.innerHTML = "";
+            
+            masterWordsPool.forEach((item, index) => {
+                listContainer.innerHTML += `
+                    <label class="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-50 border border-gray-100 cursor-pointer text-sm font-bold text-gray-700">
+                        <input type="checkbox" value="${index}" ${item.active ? 'checked' : ''} class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                        <span>${item.word} (${item.vocalized})</span>
+                    </label>
+                `;
+            });
+
+            document.getElementById("words-modal").classList.remove("hidden");
+            document.getElementById("words-modal").classList.add("flex");
+        }
+
+        function closeWordsModal() {
+            document.getElementById("words-modal").classList.remove("flex");
+            document.getElementById("words-modal").classList.add("hidden");
+        }
+
+        function toggleAllWords(status) {
+            masterWordsPool.forEach(w => w.active = status);
+            openWordsModal();
+        }
+
+        function saveSelectedWords() {
+            const checkboxes = document.querySelectorAll("#words-checkbox-list input[type='checkbox']");
+            checkboxes.forEach(cb => {
+                masterWordsPool[cb.value].active = cb.checked;
+            });
+            closeWordsModal();
+            loadNewWord();
         }
 
         function startListening() {
@@ -248,8 +328,10 @@
             document.getElementById("skip-btn").classList.add("hidden");
             document.getElementById("next-btn").classList.remove("hidden");
 
-            if (wordsPool[currentIndex].weight > 1) {
-                wordsPool[currentIndex].weight -= 1;
+            let currentItem = activeWordsPool[currentIndex];
+            let originalIndex = masterWordsPool.findIndex(w => w.word === currentItem.word);
+            if (masterWordsPool[originalIndex].weight > 1) {
+                masterWordsPool[originalIndex].weight -= 1;
             }
         }
 
@@ -265,10 +347,11 @@
             container.classList.add("animate-shake");
             setTimeout(() => container.classList.remove("animate-shake"), 400);
 
-            wordsPool[currentIndex].weight += 2;
+            let currentItem = activeWordsPool[currentIndex];
+            let originalIndex = masterWordsPool.findIndex(w => w.word === currentItem.word);
+            masterWordsPool[originalIndex].weight += 2;
         }
 
-        // دالة زر الاستماع المتاح دائماً
         function playCurrentWordAudio() {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -286,7 +369,10 @@
             skippedCount++;
             updateStats();
 
-            wordsPool[currentIndex].weight += 1;
+            let currentItem = activeWordsPool[currentIndex];
+            let originalIndex = masterWordsPool.findIndex(w => w.word === currentItem.word);
+            masterWordsPool[originalIndex].weight += 1;
+            
             loadNewWord();
         }
 
