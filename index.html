@@ -73,44 +73,44 @@
 
     </div>
 
-    <!-- رقم الإصدار v1.0.13 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.14 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-3 right-4 bg-black/30 backdrop-blur-sm text-white text-xs font-mono px-3 py-1 rounded-full shadow">
-        v1.0.13 (Updated) 🚀
+        v1.0.14 (Sukun) 🚀
     </div>
 
     <script>
-        // قائمة الكلمات المحدثة (تم تعديل بابا/ماما، مكتب -> كرسي، لعبة -> دمية)
+        // قائمة الكلمات مع إسكَان الحرف الأخير (الوقف الفصيح)
         let wordsPool = [
-            { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", vocalized: "جَمَلٌ", weight: 1 },
-            { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", vocalized: "قَلَمٌ", weight: 1 },
-            { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", vocalized: "تُفَّاحَةٌ", weight: 1 },
-            { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", vocalized: "شَمْسٌ", weight: 1 },
-            { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", vocalized: "كِتَابٌ", weight: 1 },
-            { word: "أسد", emoji: "🦁", syllables: "أَ — سَـ — د", vocalized: "أَسَدٌ", weight: 1 },
-            { word: "كرة", emoji: "⚽", syllables: "كُـ — رَ — ة", vocalized: "كُرَةٌ", weight: 1 },
-            { word: "بيت", emoji: "🏠", syllables: "بَـ — يْـ — ت", vocalized: "بَيْتٌ", weight: 1 },
-            { word: "باب", emoji: "🚪", syllables: "بَـ — ا — ب", vocalized: "بَابٌ", weight: 1 },
-            { word: "موز", emoji: "🍌", syllables: "مَـ — وْ — ز", vocalized: "مَوْزٌ", weight: 1 },
-            { word: "برتقال", emoji: "🍊", syllables: "بُـ — رْ — تُـ — قَـ — ا — ل", vocalized: "بُرْتُقَالٌ", weight: 1 },
-            { word: "حليب", emoji: "🥛", syllables: "حَـ — لِـ — ي — ب", vocalized: "حَلِيبٌ", weight: 1 },
-            { word: "ماء", emoji: "💧", syllables: "مَـ — ا — ء", vocalized: "مَاءٌ", weight: 1 },
-            { word: "قمر", emoji: "🌙", syllables: "قَـ — مَـ — ر", vocalized: "قَمَرٌ", weight: 1 },
-            { word: "نجم", emoji: "⭐", syllables: "نَـ — جْـ — م", vocalized: "نَجْمٌ", weight: 1 },
-            { word: "زهرة", emoji: "🌸", syllables: "زَ — هْـ — رَ — ة", vocalized: "زَهْرَةٌ", weight: 1 },
-            { word: "شجرة", emoji: "🌳", syllables: "شَـ — جَـ — رَ — ة", vocalized: "شَجَرَةٌ", weight: 1 },
-            { word: "سمكة", emoji: "🐟", syllables: "سَـ — مَـ — كَـ — ة", vocalized: "سَمَكَةٌ", weight: 1 },
-            { word: "عصفور", emoji: "🐦", syllables: "عُـ — صْـ — فُـ — و — ر", vocalized: "عُصْفُورٌ", weight: 1 },
-            { word: "حصان", emoji: "🐎", syllables: "حِـ — صَـ — ا — ن", vocalized: "حِصَانٌ", weight: 1 },
-            { word: "دجاجة", emoji: "🐔", syllables: "دَ — جَـ — ا — جَـ — ة", vocalized: "دَجَاجَةٌ", weight: 1 },
-            { word: "حقيبة", emoji: "🎒", syllables: "حَـ — قِـ — ي — بَـ — ة", vocalized: "حَقِيبَةٌ", weight: 1 },
-            { word: "كرسي", emoji: "🪑", syllables: "كُـ — رْ — سِـ — ي", vocalized: "كُرْسِيٌّ", weight: 1 }, // بدلاً من مكتب
-            { word: "قلم", emoji: "✒️", syllables: "قَـ — لَـ — م", vocalized: "قَلَمٌ", weight: 1 }, // بدلاً من بابا
-            { word: "مدرسة", emoji: "🏫", syllables: "مَـ — دْ — رَ — سَـ — ة", vocalized: "مَدْرَسَةٌ", weight: 1 }, // بدلاً من ماما
-            { word: "دمية", emoji: "🧸", syllables: "دُ — مْـ — يَـ — ة", vocalized: "دُمْيَةٌ", weight: 1 }, // بدلاً من لعبة
-            { word: "سيارة", emoji: "🚗", syllables: "سَـ — يَّـ — ا — رَ — ة", vocalized: "سَيَّارَةٌ", weight: 1 },
-            { word: "طائرة", emoji: "✈️", syllables: "طَـ — ا — ئِـ — رَ — ة", vocalized: "طَائِرَةٌ", weight: 1 },
-            { word: "قارب", emoji: "⛵", syllables: "قَـ — ا — رِ — ب", vocalized: "قَارِبٌ", weight: 1 },
-            { word: "علم", emoji: "🇸🇦", syllables: "عَـ — لَـ — م", vocalized: "عَلَمٌ", weight: 1 }
+            { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", weight: 1 },
+            { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
+            { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ةْ", vocalized: "تُفَّاحَةْ", weight: 1 },
+            { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — سْ", vocalized: "شَمْسْ", weight: 1 },
+            { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — بْ", vocalized: "كِتَابْ", weight: 1 },
+            { word: "أسد", emoji: "🦁", syllables: "أَ — سَـ — دْ", vocalized: "أَسَدْ", weight: 1 },
+            { word: "كرة", emoji: "⚽", syllables: "كُـ — رَ — ةْ", vocalized: "كُرَةْ", weight: 1 },
+            { word: "بيت", emoji: "🏠", syllables: "بَـ — يْـ — تْ", vocalized: "بَيْتْ", weight: 1 },
+            { word: "باب", emoji: "🚪", syllables: "بَـ — ا — بْ", vocalized: "بَابْ", weight: 1 },
+            { word: "موز", emoji: "🍌", syllables: "مَـ — وْ — زْ", vocalized: "مَوْزْ", weight: 1 },
+            { word: "برتقال", emoji: "🍊", syllables: "بُـ — رْ — تُـ — قَـ — ا — لْ", vocalized: "بُرْتُقَالْ", weight: 1 },
+            { word: "حليب", emoji: "🥛", syllables: "حَـ — لِـ — ي — بْ", vocalized: "حَلِيبْ", weight: 1 },
+            { word: "ماء", emoji: "💧", syllables: "مَـ — ا — ءْ", vocalized: "مَاءْ", weight: 1 },
+            { word: "قمر", emoji: "🌙", syllables: "قَـ — مَـ — رْ", vocalized: "قَمَرْ", weight: 1 },
+            { word: "نجم", emoji: "⭐", syllables: "نَـ — جْـ — مْ", vocalized: "نَجْمْ", weight: 1 },
+            { word: "زهرة", emoji: "🌸", syllables: "زَ — هْـ — رَ — ةْ", vocalized: "زَهْرَةْ", weight: 1 },
+            { word: "شجرة", emoji: "🌳", syllables: "شَـ — جَـ — رَ — ةْ", vocalized: "شَجَرَةْ", weight: 1 },
+            { word: "سمكة", emoji: "🐟", syllables: "سَـ — مَـ — كَـ — ةْ", vocalized: "سَمَكَةْ", weight: 1 },
+            { word: "عصفور", emoji: "🐦", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", weight: 1 },
+            { word: "حصان", emoji: "🐎", syllables: "حِـ — صَـ — ا — نْ", vocalized: "حِصَانْ", weight: 1 },
+            { word: "دجاجة", emoji: "🐔", syllables: "دَ — جَـ — ا — جَـ — ةْ", vocalized: "دَجَاجَةْ", weight: 1 },
+            { word: "حقيبة", emoji: "🎒", syllables: "حَـ — قِـ — ي — بَـ — ةْ", vocalized: "حَقِيبَةْ", weight: 1 },
+            { word: "كرسي", emoji: "🪑", syllables: "كُـ — رْ — سِـ — يْ", vocalized: "كُرْسِيّْ", weight: 1 },
+            { word: "قلم", emoji: "✒️", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
+            { word: "مدرسة", emoji: "🏫", syllables: "مَـ — دْ — رَ — سَـ — ةْ", vocalized: "مَدْرَسَةْ", weight: 1 },
+            { word: "دمية", emoji: "🧸", syllables: "دُ — مْـ — يَـ — ةْ", vocalized: "دُمْيَةْ", weight: 1 },
+            { word: "سيارة", emoji: "🚗", syllables: "سَـ — يَّـ — ا — رَ — ةْ", vocalized: "سَيَّارَةْ", weight: 1 },
+            { word: "طائرة", emoji: "✈️", syllables: "طَـ — ا — ئِـ — رَ — ةْ", vocalized: "طَائِرَةْ", weight: 1 },
+            { word: "قارب", emoji: "⛵", syllables: "قَـ — ا — رِ — بْ", vocalized: "قَارِبْ", weight: 1 },
+            { word: "علم", emoji: "🇸🇦", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", weight: 1 }
         ];
 
         let currentIndex = 0;
@@ -212,7 +212,7 @@
             const audioContainer = document.getElementById("audio-container");
             audioContainer.innerHTML = `
                 <button onclick="playVocalizedSpeech('${currentVocalizedText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
-                    🔊 استمع بالتشكيل والحركات
+                    🔊 استمع بالحرف الأخير الساكن
                 </button>
             `;
         }
