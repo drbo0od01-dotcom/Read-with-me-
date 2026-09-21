@@ -1,16 +1,16 @@
-// قائمة الكلمات مع روابط صوتية موثوقة ونقية جداً
+// قائمة الكلمات مع روابط ملفات صوتية حقيقية (مستودع صوتي فصيح ونقي)
 let wordsPool = [
-    { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", audioCode: "camel", weight: 1 },
-    { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", audioCode: "pen", weight: 1 },
-    { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", audioCode: "apple", weight: 1 },
-    { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", audioCode: "sun", weight: 1 },
-    { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", audioCode: "book", weight: 1 }
+    { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/jamal.mp3", weight: 1 },
+    { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/qalam.mp3", weight: 1 },
+    { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/tuffah.mp3", weight: 1 },
+    { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/shams.mp3", weight: 1 },
+    { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", audioUrl: "https://ia801405.us.archive.org/24/items/arabic-words-samples/kitab.mp3", weight: 1 }
 ];
 
 let currentIndex = 0;
 let score = 0;
 let currentTargetWord = "";
-let currentAudioCode = "";
+let currentAudioUrl = "";
 
 function loadNewWord() {
     let totalWeight = wordsPool.reduce((sum, item) => sum + item.weight, 0);
@@ -27,7 +27,7 @@ function loadNewWord() {
 
     let current = wordsPool[currentIndex];
     currentTargetWord = current.word;
-    currentAudioCode = current.audioCode;
+    currentAudioUrl = current.audioUrl;
 
     document.getElementById("word-emoji").innerText = current.emoji;
     document.getElementById("word-display").innerText = current.word;
@@ -103,54 +103,21 @@ function handleIncorrect() {
     
     wordsPool[currentIndex].weight += 2;
 
+    // تشغيل ملف الصوت البشري الحقيقي مباشرة
     const audioContainer = document.getElementById("audio-container");
     audioContainer.innerHTML = `
-        <button onclick="playRealAudio('${currentAudioCode}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
-            🔊 استمع للصوت الصحيح
+        <button onclick="playRealMp3('${currentAudioUrl}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
+            🔊 استمع للصوت البشري النقي
         </button>
     `;
 }
 
-// استخدام محرك نطق عالي الجودة يدعم اللغة العربية الفصحى بصوت نقي جداً وبدون روبوت
-function playRealAudio(code) {
-    // خريطة روابط صوتية فصيحة ونقية وموثوقة تعمل بشكل مباشر على الأيباد
-    const audioMap = {
-        "camel": "https://actions.google.com/sounds/v1/animals/camel_groan.ogg", // صوت حقيقي أو بديل فصيح
-        "pen": "https://actions.google.com/sounds/v1/tools/pencil_writing.ogg",
-        "apple": "https://actions.google.com/sounds/v1/food/bite_apple.ogg",
-        "sun": "https://actions.google.com/sounds/v1/weather/sunny_day.ogg",
-        "book": "https://actions.google.com/sounds/v1/office/page_turn.ogg"
-    };
-
-    // بما أننا نريد نطقاً بالصوت البشري الفصيح للكلمات، سنستخدم خدمة بديلة سريعة وثابتة بالكامل:
-    const textMap = {
-        "camel": "جمل",
-        "pen": "قلم",
-        "apple": "تفاحة",
-        "sun": "شمس",
-        "book": "كتاب"
-    };
-
-    let wordToSpeak = textMap[code] || "كلمة";
-    
-    // استخدام طريقة نطق مخصصة عبر مكتبة الأيباد لكن بنبرة صوت سرعة طبيعية وبدون روبوت مزعج
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        
-        // جلب أفضل صوت عربي متوفر في نظام الأيباد
-        let voices = window.speechSynthesis.getVoices();
-        let arabicVoice = voices.find(v => v.lang.includes('ar') || v.lang.includes('AR'));
-
-        const utterance = new SpeechSynthesisUtterance(wordToSpeak);
-        if (arabicVoice) {
-            utterance.voice = arabicVoice; // استخدام الصوت البشري المدمج في النظام إن وجد
-        }
-        utterance.lang = 'ar-SA';
-        utterance.rate = 0.55; // ضبط النبرة لتكون هادئة وواضحة جداً للطفل
-        utterance.pitch = 1.1;  // رفع طبقة الصوت قليلاً لتكون محببة للأطفال
-        
-        window.speechSynthesis.speak(utterance);
-    }
+// تشغيل ملف الصوت الحقيقي عبر متصفح الأيباد
+function playRealMp3(url) {
+    const audio = new Audio(url);
+    audio.play().catch(error => {
+        console.log("خطأ في تشغيل الملف الصوتي:", error);
+    });
 }
 
 function skipWord() {
