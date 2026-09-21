@@ -20,37 +20,50 @@
 </head>
 <body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen w-full flex items-center justify-center m-0 p-4 box-border overflow-x-hidden">
 
-    <!-- حاوية التطبيق المتوسطة للشاشة بالكامل بدقة -->
+    <!-- حاوية التطبيق المتوسطة للشاشة بالكامل -->
     <div id="main-container" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-5 md:p-8 w-full max-w-md text-center border-4 border-amber-300 transition-all duration-300 my-auto mx-auto">
         
         <!-- العنوان والشعار -->
-        <div class="mb-3">
+        <div class="mb-2">
             <span class="text-3xl inline-block animate-bounce">🌟</span>
             <h1 class="text-2xl md:text-3xl font-black text-indigo-900 mt-1">اقرأ معي</h1>
             <p class="text-gray-500 font-bold text-xs">المعلّم الذكي الصغير (مشروع معاذ)</p>
         </div>
 
+        <!-- عداد الإحصائيات (صحيحة، خاطئة، متخطاة) -->
+        <div class="grid grid-cols-3 gap-2 my-3 bg-gray-50 p-2 rounded-2xl border border-gray-200 text-xs font-bold">
+            <div class="text-emerald-600 bg-emerald-50 py-1.5 rounded-xl border border-emerald-100">
+                ✅ صح: <span id="correct-count">0</span>
+            </div>
+            <div class="text-rose-600 bg-rose-50 py-1.5 rounded-xl border border-rose-100">
+                ❌ خطأ: <span id="incorrect-count">0</span>
+            </div>
+            <div class="text-amber-600 bg-amber-50 py-1.5 rounded-xl border border-amber-100">
+                ⏭️ تخطي: <span id="skipped-count">0</span>
+            </div>
+        </div>
+
         <!-- منطقة عرض الكلمة والصورة -->
-        <div id="game-card" class="bg-amber-50/80 rounded-2xl p-5 mb-4 border-2 border-dashed border-amber-300 shadow-inner transition-transform duration-300">
+        <div id="game-card" class="bg-amber-50/80 rounded-2xl p-4 mb-3 border-2 border-dashed border-amber-300 shadow-inner transition-transform duration-300">
             <div id="word-emoji" class="text-6xl md:text-7xl mb-2 transition-transform duration-300 hover:scale-110">🐪</div>
             <div id="word-display" class="text-4xl md:text-5xl font-black text-gray-800 tracking-wider transition-all duration-300">جَمَل</div>
             <div id="syllables-display" class="text-xl text-indigo-600 font-bold mt-2 hidden bg-indigo-50 py-1.5 rounded-xl border border-indigo-100">جَـ — مَـ — لْ</div>
         </div>
 
         <!-- منطقة التغذية الراجعة -->
-        <div id="feedback-area" class="h-12 flex items-center justify-center mb-4">
-            <p id="feedback-text" class="text-base md:text-lg font-bold text-gray-600">اضغط على الميكروفون وابدأ القراءة:</p>
+        <div id="feedback-area" class="h-10 flex items-center justify-center mb-3">
+            <p id="feedback-text" class="text-sm md:text-base font-bold text-gray-600">اضغط على الميكروفون وابدأ القراءة:</p>
         </div>
 
         <!-- أزرار التفاعل -->
         <div class="flex flex-col gap-2.5">
             
             <!-- زر الميكروفون الأساسي (التحقق الصوتي) -->
-            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold py-3.5 px-4 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold py-3 px-4 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                 <span>🎙️</span> اضغط هنا وابدأ القراءة بصوتك
             </button>
 
-            <!-- مكان ظهور زر الاستماع عند الخطأ (تم تعديل التسمية إلى "استمع للنطق") -->
+            <!-- مكان ظهور زر الاستماع عند الخطأ -->
             <div id="audio-container" class="my-0.5"></div>
 
             <!-- زر التخطي -->
@@ -64,20 +77,22 @@
             </button>
         </div>
 
-        <!-- عداد النجوم وتصميمها المطور -->
-        <div class="mt-4 flex items-center justify-center gap-1.5 text-amber-500 text-xl font-black bg-amber-50 py-1.5 px-3 rounded-2xl border border-amber-200 shadow-sm w-fit mx-auto">
+        <!-- عداد النجوم -->
+        <div class="mt-3 flex items-center justify-center gap-1.5 text-amber-500 text-lg font-black bg-amber-50 py-1.5 px-3 rounded-2xl border border-amber-200 shadow-sm w-fit mx-auto">
             <span>⭐</span> النجوم: <span id="score" class="text-indigo-900">0</span>
         </div>
 
     </div>
 
-    <!-- رقم الإصدار v1.0.20 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.21 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
-        v1.0.20 (Final Clean) 🚀
+        v1.0.21 (50 Words + Stats) 🚀
     </div>
 
     <script>
+        // قائمة الكلمات الكاملة (50 كلمة مشكلة مع إسكان الحرف الأخير)
         let wordsPool = [
+            // الـ 30 كلمة السابقة
             { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", weight: 1 },
             { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", weight: 1 },
             { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ةْ", vocalized: "تُفَّاحَةْ", weight: 1 },
@@ -107,13 +122,46 @@
             { word: "سيارة", emoji: "🚗", syllables: "سَـ — يَّـ — ا — رَ — ةْ", vocalized: "سَيَّارَةْ", weight: 1 },
             { word: "طائرة", emoji: "✈️", syllables: "طَـ — ا — ئِـ — رَ — ةْ", vocalized: "طَائِرَةْ", weight: 1 },
             { word: "قارب", emoji: "⛵", syllables: "قَـ — ا — رِ — بْ", vocalized: "قَارِبْ", weight: 1 },
-            { word: "علم", emoji: "🇸🇦", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", weight: 1 }
+            { word: "علم", emoji: "🇸🇦", syllables: "عَـ — لَـ — مْ", vocalized: "عَلَمْ", weight: 1 },
+            
+            // الـ 20 كلمة الجديدة الإضافية
+            { word: "فيل", emoji: "🐘", syllables: "فِـ — ي — لْ", vocalized: "فِيلْ", weight: 1 },
+            { word: "قرد", emoji: "🐵", syllables: "قَـ — رْ — دْ", vocalized: "قَرْدْ", weight: 1 },
+            { word: "زرافة", emoji: "🦒", syllables: "زَ — رَ — ا — فَـ — ةْ", vocalized: "زَرَافَةْ", weight: 1 },
+            { word: "بقرة", emoji: "🐄", syllables: "بَـ — قَـ — رَ — ةْ", vocalized: "بَقَرَةْ", weight: 1 },
+            { word: "خروف", emoji: "🐑", syllables: "خَـ — رُ — و — فْ", vocalized: "خَرُوفْ", weight: 1 },
+            { word: "عنب", emoji: "🍇", syllables: "عِـ — نَـ — بْ", vocalized: "عِنَبْ", weight: 1 },
+            { word: "بطيخ", emoji: "🍉", syllables: "بِـ — طَـ — ي — خْ", vocalized: "بِطِيخْ", weight: 1 },
+            { word: "خوخ", emoji: "🍑", syllables: "خَـ — وْ — خْ", vocalized: "خَوْخْ", weight: 1 },
+            { word: "تمر", emoji: "🫘", syllables: "تَـ — مَـ — رْ", vocalized: "تَمَرْ", weight: 1 },
+            { word: "خبز", emoji: "🍞", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", weight: 1 },
+            { word: "جبن", emoji: "🧀", syllables: "جُـ — بْـ — نْ", vocalized: "جُبْنْ", weight: 1 },
+            { word: "بيض", emoji: "🥚", syllables: "بَـ — يْـ — ضْ", vocalized: "بَيْضْ", weight: 1 },
+            { word: "مفتاح", emoji: "🔑", syllables: "مِـ — فْـ — تَـ — ا — حْ", vocalized: "مِفْتَاحْ", weight: 1 },
+            { word: "قفل", emoji: "🔒", syllables: "قَـ — فْـ — لْ", vocalized: "قَفْلْ", weight: 1 },
+            { word: "ساعة", emoji: "⏰", syllables: "سَـ — ا — عَـ — ةْ", vocalized: "سَاعَةْ", weight: 1 },
+            { word: "هاتف", emoji: "📱", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", weight: 1 },
+            { word: "قلم", emoji: "🖍️", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", weight: 1 },
+            { word: "دفتر", emoji: "📓", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", weight: 1 },
+            { word: "مسطرة", emoji: "📏", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", weight: 1 },
+            { word: "مقص", emoji: "✂️", syllables: "مِـ — قْـ — صْ", vocalized: "مِقْصْ", weight: 1 }
         ];
 
         let currentIndex = 0;
         let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let skippedCount = 0;
+        
         let currentTargetWord = "";
         let currentVocalizedText = "";
+
+        function updateStats() {
+            document.getElementById("score").innerText = score;
+            document.getElementById("correct-count").innerText = correctCount;
+            document.getElementById("incorrect-count").innerText = incorrectCount;
+            document.getElementById("skipped-count").innerText = skippedCount;
+        }
 
         function loadNewWord() {
             let totalWeight = wordsPool.reduce((sum, item) => sum + item.weight, 0);
@@ -141,7 +189,7 @@
                 document.getElementById("syllables-display").innerText = current.syllables;
                 document.getElementById("syllables-display").classList.add("hidden");
                 document.getElementById("feedback-text").innerText = "اضغط على الميكروفون وابدأ القراءة:";
-                document.getElementById("feedback-text").className = "text-base md:text-lg font-bold text-gray-600";
+                document.getElementById("feedback-text").className = "text-sm md:text-base font-bold text-gray-600";
                 
                 card.classList.remove("scale-95", "opacity-50");
             }, 150);
@@ -191,9 +239,11 @@
 
         function handleCorrect() {
             score += 10;
-            document.getElementById("score").innerText = score;
+            correctCount++;
+            updateStats();
+
             document.getElementById("feedback-text").innerText = "أحسنت يا بطل! إجابة صحيحة ⭐";
-            document.getElementById("feedback-text").className = "text-xl md:text-2xl font-black text-emerald-600 animate-bounce";
+            document.getElementById("feedback-text").className = "text-lg md:text-xl font-black text-emerald-600 animate-bounce";
             
             const card = document.getElementById("game-card");
             card.classList.add("bg-emerald-50", "border-emerald-300");
@@ -210,8 +260,11 @@
         }
 
         function handleIncorrect() {
+            incorrectCount++;
+            updateStats();
+
             document.getElementById("feedback-text").innerText = "لا بأس يا بطل، راقب المقاطع الصوتية:";
-            document.getElementById("feedback-text").className = "text-base md:text-lg font-bold text-rose-500";
+            document.getElementById("feedback-text").className = "text-sm md:text-base font-bold text-rose-500";
             document.getElementById("syllables-display").classList.remove("hidden");
             
             const container = document.getElementById("main-container");
@@ -222,7 +275,7 @@
 
             const audioContainer = document.getElementById("audio-container");
             audioContainer.innerHTML = `
-                <button onclick="playVocalizedSpeech('${currentVocalizedText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-sm font-bold py-2.5 px-6 rounded-full shadow-md transition transform active:scale-95 cursor-pointer animate-pulse mx-auto flex items-center gap-2">
+                <button onclick="playVocalizedSpeech('${currentVocalizedText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-xs md:text-sm font-bold py-2 px-5 rounded-full shadow-md transition transform active:scale-95 cursor-pointer animate-pulse mx-auto flex items-center gap-1.5">
                     🔊 استمع للنطق
                 </button>
             `;
@@ -240,6 +293,9 @@
         }
 
         function skipWord() {
+            skippedCount++;
+            updateStats();
+
             wordsPool[currentIndex].weight += 1;
             loadNewWord();
         }
@@ -248,7 +304,10 @@
             loadNewWord();
         }
 
-        window.onload = loadNewWord;
+        window.onload = function() {
+            updateStats();
+            loadNewWord();
+        };
     </script>
 </body>
 </html>
