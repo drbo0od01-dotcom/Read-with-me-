@@ -103,7 +103,6 @@ function handleIncorrect() {
     
     wordsPool[currentIndex].weight += 2;
 
-    // استخدام رابط صوتي نقي وفصيح جداً (Google TTS Audio Stream)
     const audioContainer = document.getElementById("audio-container");
     audioContainer.innerHTML = `
         <button onclick="playClearAudio('${currentAudioText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
@@ -112,16 +111,14 @@ function handleIncorrect() {
     `;
 }
 
-// دالة تشغيل الصوت النقي والفصيح عبر خدمة الويب المباشرة
+// دالة تشغيل الصوت النقي بدون إظهار أي رسائل خطأ مزعجة
 function playClearAudio(text) {
     const encodedText = encodeURIComponent(text);
-    // رابط جقوقل لتحويل النص إلى صوت بشري فصيح ونقي
     const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=ar&client=tw-ob`;
     
     const audio = new Audio(audioUrl);
     audio.play().catch(error => {
-        console.error("تعذر تشغيل الصوت:", error);
-        alert("تأكد من اتصالك بالإنترنت ليعمل الصوت النقي.");
+        console.log("تم تجاهل خطأ التشغيل بصمت:", error);
     });
 }
 
