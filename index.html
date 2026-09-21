@@ -1,1 +1,111 @@
 <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>اقرأ معي — المعلّم الذكي الصغير</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- خط عربي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen w-full flex items-center justify-center m-0 p-4 box-border overflow-x-hidden relative">
+
+    <!-- زر اختيار الكلمات -->
+    <button onclick="openWordsModal()"
+        class="absolute top-4 right-4 bg-white/95 hover:bg-white text-indigo-900 font-bold text-sm py-2.5 px-4 rounded-2xl shadow-lg border-2 border-amber-300 transition transform active:scale-95 cursor-pointer flex items-center gap-2 z-10">
+        <span>⚙️</span>
+        اختيار الكلمات
+    </button>
+
+    <!-- التطبيق -->
+    <div id="main-container"
+        class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-5 md:p-8 w-full max-w-md text-center border-4 border-amber-300 transition-all duration-300 my-auto mx-auto">
+
+        <!-- العنوان -->
+        <div class="mb-2">
+            <span class="text-3xl inline-block animate-bounce">🌟</span>
+
+            <h1 class="text-2xl md:text-3xl font-black text-indigo-900 mt-1">
+                اقرأ معي
+            </h1>
+
+            <p class="text-gray-500 font-bold text-xs">
+                المعلّم الذكي الصغير (مشروع معاذ)
+            </p>
+        </div>
+
+        <!-- الإحصائيات -->
+        <div class="grid grid-cols-3 gap-2 my-3 bg-gray-50 p-2 rounded-2xl border border-gray-200 text-xs font-bold">
+
+            <div class="text-emerald-600 bg-emerald-50 py-1.5 rounded-xl border border-emerald-100">
+                ✅ صح:
+                <span id="correct-count">0</span>
+            </div>
+
+            <div class="text-rose-600 bg-rose-50 py-1.5 rounded-xl border border-rose-100">
+                ❌ خطأ:
+                <span id="incorrect-count">0</span>
+            </div>
+
+            <div class="text-amber-600 bg-amber-50 py-1.5 rounded-xl border border-amber-100">
+                ⏭️ تخطي:
+                <span id="skipped-count">0</span>
+            </div>
+
+        </div>
+
+        <!-- الكلمة -->
+        <div id="game-card"
+            class="bg-amber-50/80 rounded-2xl p-6 mb-3 border-2 border-dashed border-amber-300 shadow-inner transition-transform duration-300">
+
+            <div id="word-display"
+                class="text-5xl md:text-6xl font-black text-gray-800 tracking-wider transition-all duration-300 my-2">
+                جَمَلْ
+            </div>
+
+            <div id="syllables-display"
+                class="text-xl text-indigo-600 font-bold mt-3 hidden bg-indigo-50 py-1.5 rounded-xl border border-indigo-100">
+                جَـ — مَـ — لْ
+            </div>
+
+        </div>
+
+        <!-- التغذية الراجعة -->
+        <div id="feedback-area"
+            class="h-10 flex items-center justify-center mb-3">
+
+            <p id="feedback-text"
+                class="text-sm md:text-base font-bold text-gray-600">
+                اضغط على الميكروفون وابدأ القراءة:
+            </p>
+
+        </div>
+
+        <!-- الأزرار -->
+        <div class="flex flex-col gap-2.5">
+
+            <!-- الميكروفون -->
+            <button id="mic-btn"
+                onclick="startListening()"
+                class="bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold py-3 px-4 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
