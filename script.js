@@ -1,15 +1,16 @@
-// قائمة الكلمات مع ضبط محرك الصوت الداخلي المتوافق مع الأيباد
+// قائمة الكلمات مع التهجئة والنطق الفصيح
 let wordsPool = [
-    { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", weight: 1 },
-    { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", weight: 1 },
-    { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", weight: 1 },
-    { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", weight: 1 },
-    { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", weight: 1 }
+    { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", audioText: "جمل", weight: 1 },
+    { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", audioText: "قلم", weight: 1 },
+    { word: "تفاحة", emoji: "🍎", syllables: "تُـ — فَـ — ا — حَـ — ة", audioText: "تفاحة", weight: 1 },
+    { word: "شمس", emoji: "☀️", syllables: "شَـ — مْـ — س", audioText: "شمس", weight: 1 },
+    { word: "كتاب", emoji: "📖", syllables: "كِـ — تَـ — ا — ب", audioText: "كتاب", weight: 1 }
 ];
 
 let currentIndex = 0;
 let score = 0;
 let currentTargetWord = "";
+let currentAudioText = "";
 
 function loadNewWord() {
     let totalWeight = wordsPool.reduce((sum, item) => sum + item.weight, 0);
@@ -26,6 +27,7 @@ function loadNewWord() {
 
     let current = wordsPool[currentIndex];
     currentTargetWord = current.word;
+    currentAudioText = current.audioText;
 
     document.getElementById("word-emoji").innerText = current.emoji;
     document.getElementById("word-display").innerText = current.word;
@@ -101,29 +103,35 @@ function handleIncorrect() {
     
     wordsPool[currentIndex].weight += 2;
 
-    // زر تشغيل الصوت الداخلي المدمج المتوافق مع متصفح الأيباد
+    // استخدام رابط صوت قوقل النقي الفصيح (مع إعادة التوجيه السريع)
     const audioContainer = document.getElementById("audio-container");
     audioContainer.innerHTML = `
-        <button onclick="playNativeAudio('${currentTargetWord}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
-            🔊 اسمع الكلمة بوضوح
+        <button onclick="playClearAudio('${currentAudioText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
+            🔊 استمع للصوت الفصيح النقي
         </button>
     `;
 }
 
-// دالة نطق مدمجة تعمل مباشرة عبر محرك المتصفح بطريقة مضمونة للأيباد
-function playNativeAudio(text) {
+// دالة تشغيل الصوت النقي الفصيح عبر قوقل
+function playClearAudio(text) {
+    const encodedText = encodeURIComponent(text);
+    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=ar&client=tw-ob`;
+    
+    const audio = new Audio(audioUrl);
+    audio.play().catch(error => {
+        // لو حظر الأيباد الرابط الخارجي، ننتقل تلقائياً للصوت الداخلي المحسّن كبديل آمن
+        fallbackNativeSpeech(text);
+    });
+}
+
+// صوت داخلي محسّن كبديل احتياطي لو ما اشتغل الرابط الخارجي
+function fallbackNativeSpeech(text) {
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        
-        // تجهيز الكلمة مع إبطاء النطق لكي تصبح واضحة وسليمة
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'ar-SA';
-        utterance.rate = 0.4; // سرعة بطيئة وواضحة جداً للطفل
-        utterance.pitch = 1.0;
-        
+        utterance.rate = 0.4; // بطيء وواضح جداً
         window.speechSynthesis.speak(utterance);
-    } else {
-        console.log("متصفحك لا يدعم خاصية الصوت.");
     }
 }
 
