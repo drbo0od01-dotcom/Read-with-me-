@@ -73,13 +73,13 @@
 
     </div>
 
-    <!-- رقم الإصدار v1.0.10 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.11 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-3 right-4 bg-black/30 backdrop-blur-sm text-white text-xs font-mono px-3 py-1 rounded-full shadow">
-        v1.0.10 (Harakat) 🚀
+        v1.0.11 (Shaddah Fix) 🚀
     </div>
 
     <script>
-        // قائمة الكلمات مع التشكيل الكامل المخصص للنطق بالحركات
+        // قائمة الكلمات مع تصحيح شدة الفاء في كلمة تفاحة
         let wordsPool = [
             { word: "جَمَل", emoji: "🐪", syllables: "جَـ — مَـ — ل", vocalized: "جَمَلٌ", weight: 1 },
             { word: "قلم", emoji: "✏️", syllables: "قَـ — لَـ — م", vocalized: "قَلَمٌ", weight: 1 },
@@ -184,7 +184,6 @@
             
             wordsPool[currentIndex].weight += 2;
 
-            // زر الاستماع بالنص المشكل بالكامل
             const audioContainer = document.getElementById("audio-container");
             audioContainer.innerHTML = `
                 <button onclick="playVocalizedSpeech('${currentVocalizedText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-base font-bold py-2 px-5 rounded-full shadow-md transition cursor-pointer animate-pulse">
@@ -193,14 +192,13 @@
             `;
         }
 
-        // دالة نطق تستخدم النص المشكل مع إبطاء السرعة لتوضيح الحركات
         function playVocalizedSpeech(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ar-SA';
-                utterance.rate = 0.45; // سرعة أبطأ لإعطاء فرصة للنظام لقراءة الحركات
+                utterance.rate = 0.45;
                 utterance.pitch = 1.0;
                 
                 window.speechSynthesis.speak(utterance);
