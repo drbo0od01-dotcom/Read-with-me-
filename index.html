@@ -116,13 +116,13 @@
         </div>
     </div>
 
-    <!-- رقم الإصدار v1.0.24 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.25 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
-        v1.0.24 (Word Picker) 🚀
+        v1.0.25 (Maqass Corrected) 🚀
     </div>
 
     <script>
-        // قائمة الكلمات الكاملة الـ 50 الأساسية
+        // قائمة الكلمات الكاملة الـ 50 مع تصحيح مقص
         const masterWordsPool = [
             { word: "جَمَل", syllables: "جَـ — مَـ — لْ", vocalized: "جَمَلْ", active: true },
             { word: "قلم", syllables: "قَـ — لَـ — مْ", vocalized: "قَلَمْ", active: true },
@@ -142,7 +142,7 @@
             { word: "زهرة", syllables: "زَ — هْـ — رَ — ةْ", vocalized: "زَهْرَةْ", active: true },
             { word: "شجرة", syllables: "شَـ — جَـ — رَ — ةْ", vocalized: "شَجَرَةْ", active: true },
             { word: "سمكة", syllables: "سَـ — مَـ — كَـ — ةْ", vocalized: "سَمَكَةْ", active: true },
-            { word: "عصفور", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", weight: 1, active: true },
+            { word: "عصفور", syllables: "عُـ — صْـ — فُـ — و — رْ", vocalized: "عُصْفُورْ", active: true },
             { word: "حصان", syllables: "حِـ — صَـ — ا — نْ", vocalized: "حِصَانْ", active: true },
             { word: "دجاجة", syllables: "دَ — جَـ — ا — جَـ — ةْ", vocalized: "دَجَاجَةْ", active: true },
             { word: "حقيبة", syllables: "حَـ — قِـ — ي — بَـ — ةْ", vocalized: "حَقِيبَةْ", active: true },
@@ -163,17 +163,17 @@
             { word: "بطيخ", syllables: "بِـ — طِّـ — ي — خْ", vocalized: "بِطِِّيخْ", active: true },
             { word: "خوخ", syllables: "خَـ — وْ — خْ", vocalized: "خَوْخْ", active: true },
             { word: "تمر", syllables: "تَـ — مَـ — رْ", vocalized: "تَمَرْ", active: true },
-            { word: "خبز", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", weight: 1, active: true },
+            { word: "خبز", syllables: "خَـ — بْـ — زْ", vocalized: "خَبْزْ", active: true },
             { word: "جبن", syllables: "جُـ — بْـ — نْ", vocalized: "جُبْنْ", active: true },
             { word: "بيض", syllables: "بَـ — يْـ — ضْ", vocalized: "بَيْضْ", active: true },
             { word: "مفتاح", syllables: "مِـ — فْـ — تَـ — ا — حْ", vocalized: "مِفْتَاحْ", active: true },
             { word: "قفل", syllables: "قَـ — فْـ — لْ", vocalized: "قَفْلْ", active: true },
             { word: "ساعة", syllables: "سَـ — ا — عَـ — ةْ", vocalized: "سَاعَةْ", active: true },
-            { word: "هاتف", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", weight: 1, active: true },
+            { word: "هاتف", syllables: "هَـ — ا — تِـ — فْ", vocalized: "هَاتِفْ", active: true },
             { word: "تلوين", syllables: "تَـ — لْـ — وِ — ي — نْ", vocalized: "تَلْوِينْ", active: true },
             { word: "دفتر", syllables: "دَ — فْـ — تَـ — رْ", vocalized: "دَفْتَرْ", active: true },
             { word: "مسطرة", syllables: "مِـ — سْـ — طَـ — رَ — ةْ", vocalized: "مِسْطَرَةْ", active: true },
-            { word: "مقص", syllables: "مَـ — قْـ — صْ", vocalized: "مَقْصْ", active: true }
+            { word: "مقص", syllables: "مِـ — قَـ — صْـ — صْ", vocalized: "مِقَصّْ", active: true } // تم تصحيح التشديد والكسر (مِقَصّْ)
         ];
 
         let activeWordsPool = [];
@@ -238,7 +238,6 @@
             document.getElementById("next-btn").classList.add("hidden");
         }
 
-        // إبداء نافذة اختيار الكلمات
         function openWordsModal() {
             const listContainer = document.getElementById("words-checkbox-list");
             listContainer.innerHTML = "";
