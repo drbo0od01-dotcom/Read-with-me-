@@ -39,28 +39,18 @@
 
         <!-- منطقة التغذية الراجعة -->
         <div id="feedback-area" class="h-12 flex items-center justify-center mb-4">
-            <p id="feedback-text" class="text-base md:text-lg font-bold text-gray-600">انطق الكلمة أو اضغط تحقق:</p>
+            <p id="feedback-text" class="text-base md:text-lg font-bold text-gray-600">اضغط على الميكروفون وابدأ القراءة:</p>
         </div>
 
         <!-- أزرار التفاعل -->
         <div class="flex flex-col gap-2.5">
             
             <!-- زر الميكروفون الأساسي (التحقق الصوتي) -->
-            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold py-3 px-4 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+            <button id="mic-btn" onclick="startListening()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold py-3.5 px-4 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                 <span>🎙️</span> اضغط هنا وابدأ القراءة بصوتك
             </button>
 
-            <!-- أزرار التقييم المباشر (صح / خطأ) -->
-            <div class="flex gap-2 justify-center">
-                <button onclick="handleCorrect()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2.5 px-3 rounded-2xl shadow transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1">
-                    ✅ قرأها صح
-                </button>
-                <button onclick="handleIncorrect()" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white text-sm font-bold py-2.5 px-3 rounded-2xl shadow transition transform active:scale-95 cursor-pointer flex items-center justify-center gap-1">
-                    ❌ أخطأ فيها
-                </button>
-            </div>
-
-            <!-- مكان ظهور زر الاستماع عند الخطأ -->
+            <!-- مكان ظهور زر الاستماع عند الخطأ (تم تعديل التسمية إلى "استمع للنطق") -->
             <div id="audio-container" class="my-0.5"></div>
 
             <!-- زر التخطي -->
@@ -81,9 +71,9 @@
 
     </div>
 
-    <!-- رقم الإصدار v1.0.19 في الزاوية السفلية اليمنى -->
+    <!-- رقم الإصدار v1.0.20 في الزاوية السفلية اليمنى -->
     <div class="absolute bottom-2 right-3 bg-black/30 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-full shadow-lg border border-white/10 pointer-events-none">
-        v1.0.19 (Perfect Center) 🚀
+        v1.0.20 (Final Clean) 🚀
     </div>
 
     <script>
@@ -150,7 +140,7 @@
                 document.getElementById("word-display").innerText = current.word;
                 document.getElementById("syllables-display").innerText = current.syllables;
                 document.getElementById("syllables-display").classList.add("hidden");
-                document.getElementById("feedback-text").innerText = "انطق الكلمة أو اضغط تحقق:";
+                document.getElementById("feedback-text").innerText = "اضغط على الميكروفون وابدأ القراءة:";
                 document.getElementById("feedback-text").className = "text-base md:text-lg font-bold text-gray-600";
                 
                 card.classList.remove("scale-95", "opacity-50");
@@ -166,7 +156,7 @@
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             
             if (!SpeechRecognition) {
-                alert("متصفحك لا يدعم التحقق الصوتي المباشر، يرجى استخدام أزرار التقييم أدناه.");
+                alert("متصفحك لا يدعم التحقق الصوتي المباشر.");
                 return;
             }
 
@@ -188,7 +178,7 @@
             };
 
             recognition.onerror = function() {
-                document.getElementById("feedback-text").innerText = "تعذر التقاط الصوت، جرب التقييم اليدوي!";
+                document.getElementById("feedback-text").innerText = "تعذر التقاط الصوت، حاول مجدداً!";
                 document.getElementById("mic-btn").classList.remove("animate-pulse", "bg-amber-500");
             };
 
@@ -222,6 +212,7 @@
         function handleIncorrect() {
             document.getElementById("feedback-text").innerText = "لا بأس يا بطل، راقب المقاطع الصوتية:";
             document.getElementById("feedback-text").className = "text-base md:text-lg font-bold text-rose-500";
+            document.getElementById("syllables-display").classList.remove("hidden");
             
             const container = document.getElementById("main-container");
             container.classList.add("animate-shake");
@@ -231,8 +222,8 @@
 
             const audioContainer = document.getElementById("audio-container");
             audioContainer.innerHTML = `
-                <button onclick="playVocalizedSpeech('${currentVocalizedText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-sm font-bold py-2 px-4 rounded-full shadow-md transition transform active:scale-95 cursor-pointer animate-pulse mx-auto flex items-center gap-1.5">
-                    🔊 استمع بالحرف الأخير الساكن
+                <button onclick="playVocalizedSpeech('${currentVocalizedText}')" class="bg-sky-500 hover:bg-sky-600 text-white text-sm font-bold py-2.5 px-6 rounded-full shadow-md transition transform active:scale-95 cursor-pointer animate-pulse mx-auto flex items-center gap-2">
+                    🔊 استمع للنطق
                 </button>
             `;
         }
